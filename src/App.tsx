@@ -1,37 +1,33 @@
+import { RouterProvider } from 'react-router';
+import { router } from './pages/routes';
 import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import './App.css';
+import { WishlistProvider } from './context/wishlist';
+import { Wish } from './types/wish';
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const [wishlist, setWishlist] = useState<Wish[]>([
+    {
+      title: 'Test produkt 2',
+      url: 'https://www.amazon.de/dp/B085WV7HJR/ref=gw_de_desk_sc_mso_atf_aucc_pwl?pf_rd_r=M5YB3C9SF51DRP6C7T5K&pf_rd_p=c86ec814-68f3-4965-9bfd-d606e03013aa&pd_rd_r=17d4bd40-b396-4937-bcc3-05b7030198be&pd_rd_w=NFbd8&pd_rd_wg=yPHnr&ref_=pd_gw_unk',
+      imageUrl: 'https://m.media-amazon.com/images/I/414iLzSlgXL._AC_SL1000_.jpg',
+    },
+    {
+      title: 'Test produkt mit super langem Titel',
+      url: 'https://www.amazon.de/dp/B085WV7HJR/ref=gw_de_desk_sc_mso_atf_aucc_pwl?pf_rd_r=M5YB3C9SF51DRP6C7T5K&pf_rd_p=c86ec814-68f3-4965-9bfd-d606e03013aa&pd_rd_r=17d4bd40-b396-4937-bcc3-05b7030198be&pd_rd_w=NFbd8&pd_rd_wg=yPHnr&ref_=pd_gw_unk',
+      imageUrl: 'https://m.media-amazon.com/images/I/414iLzSlgXL._AC_SL1000_.jpg',
+      fulfilled: true,
+    },
+    {
+      title: 'Krasses Produkt',
+      url: 'https://www.amazon.de/dp/B085WV7HJR/ref=gw_de_desk_sc_mso_atf_aucc_pwl?pf_rd_r=M5YB3C9SF51DRP6C7T5K&pf_rd_p=c86ec814-68f3-4965-9bfd-d606e03013aa&pd_rd_r=17d4bd40-b396-4937-bcc3-05b7030198be&pd_rd_w=NFbd8&pd_rd_wg=yPHnr&ref_=pd_gw_unk',
+      imageUrl: 'https://m.media-amazon.com/images/I/414iLzSlgXL._AC_SL1000_.jpg',
+    },
+  ]);
   return (
-    <div className="App">
-      <div className="flex justify-center items-center">
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-        <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer">
-          <img src="/typescript.svg" className="logo react" alt="TypeScript logo" />
-        </a>
-        <a href="https://tailwindcss.com/" target="_blank" rel="noreferrer">
-          <img src="/tailwindcss.svg" className="logo" alt="TailwindCSS logo" />
-        </a>
-        <a href="https://eslint.org/" target="_blank" rel="noreferrer">
-          <img src="/eslint.svg" className="logo" alt="ESLint logo" />
-        </a>
-      </div>
-      <h1>Vite + React 18 + TS + TailwindCSS + ESLint</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the logos to learn more</p>
+    <div className="flex flex-col justify-start w-full p-4 min-h-screen max-w-screen-xl mx-auto">
+      <WishlistProvider value={{ wishlist, setWishlist }}>
+        <RouterProvider router={router} />
+      </WishlistProvider>
     </div>
   );
 }

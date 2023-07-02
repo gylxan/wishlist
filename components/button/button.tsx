@@ -1,5 +1,6 @@
-import { ButtonHTMLAttributes, HTMLProps } from 'react';
+import React, { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLProps } from 'react';
 import clsx from 'clsx';
+import Link, { LinkProps } from 'next/link';
 
 const variantClasses = {
   primary: `bg-blue-500 hover:bg-blue-700 active:bg-blue-900 text-white font-bold disabled:bg-blue-500`,
@@ -8,7 +9,12 @@ const variantClasses = {
 
 type Variant = keyof typeof variantClasses;
 
-export type ButtonProps = HTMLProps<HTMLButtonElement | HTMLAnchorElement> & {
+type ButtonLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
+  LinkProps & {
+    children?: React.ReactNode;
+  } & React.RefAttributes<HTMLAnchorElement>;
+
+export type ButtonProps = (HTMLProps<HTMLButtonElement> | ButtonLinkProps) & {
   variant?: Variant;
 };
 export const Button = ({
@@ -24,9 +30,9 @@ export const Button = ({
   );
   if ('href' in otherProps) {
     return (
-      <a className={classNames} {...(otherProps as HTMLProps<HTMLAnchorElement>)}>
+      <Link className={classNames} {...(otherProps as ButtonLinkProps)}>
         {children}
-      </a>
+      </Link>
     );
   }
   return (

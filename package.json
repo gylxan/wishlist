@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "npm lint:format && npm lint:fix",
     "prettier": "prettier --write '**/*.{ts,tsx,js,jsx,css,html,json}'",

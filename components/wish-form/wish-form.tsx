@@ -24,7 +24,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
-    const value = e.currentTarget.storageValue;
+    const value = e.currentTarget.value;
     setDirty(!wish || wish[name as keyof Wish] !== value);
 
     setCurrentData((data) => ({

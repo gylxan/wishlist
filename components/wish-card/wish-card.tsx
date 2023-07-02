@@ -3,7 +3,6 @@ import { ExternalLink } from 'react-feather';
 import { Card } from '../card/card';
 import { Wish } from '../../types/wish';
 import clsx from 'clsx';
-import useLocalStorage from '../../hooks/useLocalStorage';
 import { isUserLocalUser } from '../../utils/user';
 import { useUserContext } from '../../context/user';
 

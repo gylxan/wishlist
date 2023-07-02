@@ -16,6 +16,8 @@ dist-ssr
 /out/
 .next
 
+prisma/dev.db
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

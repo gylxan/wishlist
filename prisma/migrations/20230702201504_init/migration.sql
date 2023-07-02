@@ -1,10 +1,12 @@
 -- CreateTable
 CREATE TABLE "Wish" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "url" TEXT,
     "imageUrl" TEXT,
-    "granter" TEXT
+    "giver" TEXT,
+
+    CONSTRAINT "Wish_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

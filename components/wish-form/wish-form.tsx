@@ -2,6 +2,7 @@ import { Button } from '../button/button';
 import { Wish } from '../../types/wish';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Image as RFImage } from 'react-feather';
+import { Input } from '../input/input';
 
 type WishFormProps = {
   wish?: Wish;
@@ -23,7 +24,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
-    const value = e.currentTarget.value;
+    const value = e.currentTarget.storageValue;
     setDirty(!wish || wish[name as keyof Wish] !== value);
 
     setCurrentData((data) => ({
@@ -35,8 +36,6 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
   const isValid = Object.values(currentData).every(
     (value) => value && (typeof value !== 'number' ? value.trim() !== '' : true),
   );
-
-  console.log('valid', isValid, 'dirty', isDirty);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -57,9 +56,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
     }
   };
 
-  const handleDelete = (e: MouseEvent) => {
-    e.preventDefault();
-
+  const handleDelete = () => {
     if (wish && wish.id) {
       onDelete(wish.id);
     }
@@ -79,26 +76,23 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
           </div>
         )}
         <div className="flex flex-1 flex-col gap-2">
-          <input
+          <Input
             type="text"
-            className="rounded-sm px-2 py-1"
             value={currentData.title}
             name="title"
             placeholder="Titel"
             onChange={handleChange}
-            required={true}
+            required
           />
-          <input
+          <Input
             type="url"
-            className="rounded-sm px-2 py-1"
             value={currentData.url || ''}
             name="url"
             placeholder="URL"
             onChange={handleChange}
           />
-          <input
+          <Input
             type="url"
-            className="rounded-sm px-2 py-1"
             value={currentData.imageUrl || ''}
             name="imageUrl"
             placeholder="Bild URL"

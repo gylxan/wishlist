@@ -3,14 +3,28 @@ import { ExternalLink } from 'react-feather';
 import { Card } from '../card/card';
 import { Wish } from '../../types/wish';
 import clsx from 'clsx';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { isUserLocalUser } from '../../utils/user';
+import { useUserContext } from '../../context/user';
 
-type WishCardProps = Wish & {
-  onFulfill: () => void;
+type WishCardProps = {
+  wish: Wish;
+  onFulfill: (wish: Wish) => void;
+  onReject: (wish: Wish) => void;
 };
 
-export const WishCard = ({ url, title, imageUrl, giver, onFulfill }: WishCardProps) => {
+export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
+  const { url, title, imageUrl, giver } = wish;
   const newUrl = url ? new URL(url) : undefined;
   const urlWithoutWww = newUrl?.hostname.replace('www.', '');
+  const { username } = useUserContext();
+
+  const hasGiver = !!giver;
+  const isGiverLocalUser = isUserLocalUser(giver ?? null, username);
+
+  const handleClick = () => {
+    hasGiver && isGiverLocalUser ? onReject(wish) : onFulfill(wish);
+  };
 
   return (
     <Card className={clsx(giver && 'opacity-60')}>
@@ -24,8 +38,8 @@ export const WishCard = ({ url, title, imageUrl, giver, onFulfill }: WishCardPro
       <p className="min-h-[1.5em]">{giver ? `Erfüllt von ${giver}` : ' '}</p>
       <hr className="flex-c h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300" />
       <div className="flex w-full justify-between">
-        <Button disabled={!!giver} onClick={onFulfill}>
-          Erfüllen
+        <Button disabled={hasGiver && !isGiverLocalUser} onClick={handleClick}>
+          {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}
         </Button>
         {!!url && (
           <Button

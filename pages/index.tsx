@@ -3,7 +3,7 @@ import { Wishlist } from '../components/wishlist/wishlist';
 import { Calendar, Star, User } from 'react-feather';
 import { Card } from '../components/card/card';
 import { getFulfilledWishes } from '../utils/wish';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/button/button';
 import { getDifferenceInDays, getFormattedDate, getParsedDate } from '../types/date';
 import { GetStaticProps } from 'next';
@@ -11,7 +11,10 @@ import { Wish } from '../types/wish';
 import Link from 'next/link';
 import prisma from '../utils/prisma';
 import { doApiCall } from '../utils/api';
-import { getSessionStorageItem, setSessionStorageItem } from '../utils/session-storage';
+import { setSessionStorageItem } from '../utils/session-storage';
+import useSessionStorage from '../hooks/useSessionStorage';
+import { isEmpty } from '../utils/string';
+import { useUserContext } from '../context/user';
 
 type WishlistPageProps = {
   wishes?: Wish[];
@@ -19,19 +22,43 @@ type WishlistPageProps = {
 const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const [wishes, setWishes] = useState(wishesProp);
   const fulfilledWishes = getFulfilledWishes(wishes ?? []);
-  const [showFulfilled, setShowFulfilled] = useState(
-    getSessionStorageItem('show_fulfilled') === 'true',
-  );
+  const { storageValue: sessionShowFulfilled } = useSessionStorage({
+    key: 'show_fulfilled',
+  });
+  const { username, setUser } = useUserContext();
+  const [showFulfilled, setShowFulfilled] = useState(sessionShowFulfilled === 'true');
 
-  const handleUpdate = async (id: number, name: string | null) => {
-    if (name !== null && name.trim() !== '') {
-      const response = await doApiCall(`/wish/${id}`, 'PUT', {
-        giver: name,
-      });
-      const updatedWish = await response.json();
-      setWishes((wishes) =>
-        wishes?.map((wish) => (wish.id === updatedWish.id ? updatedWish : wish)),
-      );
+  useEffect(() => {
+    setShowFulfilled(sessionShowFulfilled === 'true');
+  }, [sessionShowFulfilled]);
+
+  const updateWish = async (id: number, name: string | null) => {
+    const response = await doApiCall(`/wish/${id}`, 'PUT', {
+      giver: name,
+    });
+    const updatedWish = await response.json();
+    setWishes((wishes) =>
+      wishes?.map((wish) => (wish.id === updatedWish.id ? updatedWish : wish)),
+    );
+  };
+
+  const handleFulfill = (wish: Wish) => {
+    if (!wish.giver && wish.id) {
+      let name = username;
+      if (!username) {
+        name = prompt('Gib uns doch bitte deinen Namen');
+      }
+
+      if (!isEmpty(name)) {
+        !username && setUser(name as string);
+        updateWish(wish.id, name);
+      }
+    }
+  };
+
+  const handleReject = (wish: Wish) => {
+    if (wish.id) {
+      updateWish(wish.id, null);
     }
   };
 
@@ -79,16 +106,12 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
       <Wishlist>
         {wishes
           ?.filter(({ giver }) => (showFulfilled ? true : !giver))
-          .map((entry) => (
+          .map((wish) => (
             <WishCard
-              key={entry.title}
-              {...entry}
-              onFulfill={() => {
-                if (!entry.giver && entry.id) {
-                  const name = prompt('Gib uns doch bitte deinen Namen');
-                  handleUpdate(entry.id, name);
-                }
-              }}
+              key={wish.title}
+              wish={wish}
+              onFulfill={handleFulfill}
+              onReject={handleReject}
             />
           ))}
       </Wishlist>

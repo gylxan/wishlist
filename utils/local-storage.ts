@@ -1,11 +1,11 @@
-export type SessionStorageKey = 'show_fulfilled';
-export const setSessionStorageItem = (key: SessionStorageKey, value: string) => {
+export type LocalStorageKey = 'username';
+export const setLocalStorageItem = (key: LocalStorageKey, value: string) => {
   if (typeof window !== 'undefined') {
     window.sessionStorage.setItem(key, value);
   }
 };
 
-export const getSessionStorageItem = (key: SessionStorageKey) => {
+export const getLocalStorageItem = (key: LocalStorageKey) => {
   if (typeof window !== 'undefined') {
     return window.sessionStorage.getItem(key);
   }

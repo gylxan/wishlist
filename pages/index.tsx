@@ -8,13 +8,13 @@ import { Button } from '../components/button/button';
 import { getDifferenceInDays, getFormattedDate, getParsedDate } from '../types/date';
 import { GetServerSideProps } from 'next';
 import { Wish } from '../types/wish';
-import Link from 'next/link';
 import prisma from '../utils/prisma';
 import { setSessionStorageItem } from '../utils/session-storage';
 import useSessionStorage from '../hooks/useSessionStorage';
 import { isEmpty } from '../utils/string';
 import { useUserContext } from '../context/user';
 import { useApi } from '../hooks/useApi';
+import { Link } from '../components/link/link';
 
 type WishlistPageProps = {
   wishes?: Wish[];
@@ -46,11 +46,22 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
     }
   };
 
+  const login = () => {
+    const name = prompt('Wie ist dein Name?');
+
+    if (!isEmpty(name)) {
+      !username && setUser(name as string);
+      return name;
+    }
+    return null;
+  };
+
   const handleFulfill = (wish: Wish) => {
     if (!wish.giver && wish.id) {
       let name = username;
+
       if (!username) {
-        name = prompt('Gib uns doch bitte deinen Namen');
+        name = login();
       }
 
       if (!isEmpty(name)) {
@@ -72,7 +83,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const differenceInDays = dateUntil ? getDifferenceInDays(new Date(), dateUntil) : 0;
 
   return (
-    <div className="relative flex flex-col gap-4 pb-20">
+    <div className="relative flex min-h-screen flex-col gap-4 pb-20">
       <Card>
         <span className="text-3xl font-bold">Endlich es es so weit! 🎉</span>
         <div className="flex flex-row flex-wrap justify-center gap-4">
@@ -119,9 +130,17 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
             />
           ))}
       </Wishlist>
-      <div className="absolute bottom-0 w-full">
-        {!!username && <span>Angemeldet als {username}</span>}
-        <span className="right-0">
+      <div className="mt-auto flex w-full justify-between pt-8">
+        <span>
+          {username ? (
+            `Angemeldet als ${username}`
+          ) : (
+            <Button variant="outline" size="sm" onClick={login}>
+              Anmelden
+            </Button>
+          )}
+        </span>
+        <span>
           Hier geht&apos;s zum <Link href="/admin">Admin-Bereich</Link>
         </span>
       </div>

@@ -6,12 +6,12 @@ import { Input } from '../input/input';
 
 type WishFormProps = {
   wish?: Wish;
+  disabled?: boolean;
   onSubmit: (data: Wish) => Promise<void>;
   onDelete: (id: number) => void;
 };
 
-const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
-  const [isLoading, setLoading] = useState(false);
+const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
   const [isDirty, setDirty] = useState(false);
   const [currentData, setCurrentData] = useState(
     wish ?? {
@@ -20,7 +20,6 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
       url: '',
     },
   );
-  console.log(currentData);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
@@ -41,18 +40,13 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
     e.preventDefault();
 
     if (isValid) {
-      setLoading(true);
-      try {
-        await onSubmit(currentData);
-        setDirty(false);
-        setCurrentData({
-          imageUrl: '',
-          title: '',
-          url: '',
-        });
-      } finally {
-        setLoading(false);
-      }
+      await onSubmit(currentData);
+      setDirty(false);
+      setCurrentData({
+        imageUrl: '',
+        title: '',
+        url: '',
+      });
     }
   };
 
@@ -82,6 +76,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
             name="title"
             placeholder="Titel"
             onChange={handleChange}
+            disabled={disabled}
             required
           />
           <Input
@@ -90,6 +85,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
             name="url"
             placeholder="URL"
             onChange={handleChange}
+            disabled={disabled}
           />
           <Input
             type="url"
@@ -97,6 +93,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
             name="imageUrl"
             placeholder="Bild URL"
             onChange={handleChange}
+            disabled={disabled}
           />
         </div>
       </div>
@@ -104,7 +101,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
         <Button
           variant="primary"
           type="submit"
-          disabled={!isValid || !isDirty || isLoading}
+          disabled={disabled || !isValid || !isDirty}
         >
           Speichern
         </Button>
@@ -113,7 +110,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
             variant="outline"
             type="button"
             onClick={handleDelete}
-            disabled={isLoading}
+            disabled={disabled}
           >
             Löschen
           </Button>

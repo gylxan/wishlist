@@ -5,34 +5,49 @@ import WishForm from '../../components/wish-form/wish-form';
 import { useState } from 'react';
 import { getWishes } from '../api/wish/[[...id]]';
 import { doApiCall } from '../../utils/api';
+import { useApi } from '../../hooks/useApi';
 
 type AdminPageProps = {
   wishes?: Wish[];
 };
 const AdminPage = ({ wishes }: AdminPageProps) => {
   const [currentWishes, setWishes] = useState(wishes);
+  const { fetch: fetchWishes } = useApi<Wish[]>({
+    url: '/wish',
+    method: 'GET',
+  });
+
+  const { fetch: deleteWish, loading: isDeleting } = useApi({
+    url: '/wish',
+    method: 'DELETE',
+  });
+
+  const { fetch: updateWish, loading: isUpdating } = useApi({
+    url: '/wish',
+    method: 'PUT',
+  });
+
+  const { fetch: createWish, loading: isCreating } = useApi({
+    url: '/wish',
+    method: 'POST',
+  });
 
   const loadWishes = async () => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/wish`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const wishes = await fetchWishes();
 
-    setWishes(await response.json());
+    setWishes(wishes || []);
   };
   const handleDelete = async (id: number) => {
-    await doApiCall(`wish/${id}`, 'DELETE');
+    await deleteWish({ id });
 
     await loadWishes();
   };
 
   const handleSubmit = async (data: Wish) => {
     if (data.id) {
-      await doApiCall(`/wish/${data.id}`, 'PUT', data);
+      await updateWish({ id: data.id, data });
     } else {
-      await doApiCall(`/wish`, 'POST', data);
+      await createWish({ data });
     }
     await loadWishes();
   };
@@ -42,7 +57,8 @@ const AdminPage = ({ wishes }: AdminPageProps) => {
       <div className="flex w-full flex-col gap-4">
         {currentWishes?.map((wish) => (
           <WishForm
-            key={wish.title}
+            disabled={isDeleting || isUpdating || isCreating}
+            key={wish.id}
             onSubmit={handleSubmit}
             wish={wish}
             onDelete={handleDelete}

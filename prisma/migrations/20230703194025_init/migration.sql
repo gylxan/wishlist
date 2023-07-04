@@ -8,6 +8,3 @@ CREATE TABLE "Wish" (
 
     CONSTRAINT "Wish_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "Wish_title_key" ON "Wish"("title");

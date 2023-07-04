@@ -1,13 +1,19 @@
 import 'styles/globals.css';
 import { AppProps } from 'next/app';
 import { UserWrapper } from '../context/user';
+import Head from 'next/head';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <UserWrapper>
-      <div className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start p-4">
-        <Component {...pageProps} />
-      </div>
-    </UserWrapper>
+    <>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <UserWrapper>
+        <div className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start p-4">
+          <Component {...pageProps} />
+        </div>
+      </UserWrapper>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../utils/prisma';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export const getWishes = async () => await prisma.wish.findMany();
 
@@ -13,12 +14,16 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function post(req: NextApiRequest, res: NextApiResponse) {
-  const id = await prisma.wish.create({
-    data: {
-      ...req.body,
-    },
-  });
-  res.status(200).json({ id });
+  try {
+    const id = await prisma.wish.create({
+      data: {
+        ...req.body,
+      },
+    });
+    res.status(200).json({ id });
+  } catch (e) {
+    res.status(400).json({ message: getErrorMessage(e) });
+  }
 }
 
 async function put(req: NextApiRequest, res: NextApiResponse) {
@@ -49,6 +54,7 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function remove(req: NextApiRequest, res: NextApiResponse) {
+  console.log(req.query);
   if (req.query.id) {
     const id = req.query.id[0];
     try {

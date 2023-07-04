@@ -6,15 +6,15 @@ import { getFulfilledWishes } from '../utils/wish';
 import { useEffect, useState } from 'react';
 import { Button } from '../components/button/button';
 import { getDifferenceInDays, getFormattedDate, getParsedDate } from '../types/date';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { Wish } from '../types/wish';
 import Link from 'next/link';
 import prisma from '../utils/prisma';
-import { doApiCall } from '../utils/api';
 import { setSessionStorageItem } from '../utils/session-storage';
 import useSessionStorage from '../hooks/useSessionStorage';
 import { isEmpty } from '../utils/string';
 import { useUserContext } from '../context/user';
+import { useApi } from '../hooks/useApi';
 
 type WishlistPageProps = {
   wishes?: Wish[];
@@ -27,19 +27,23 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   });
   const { username, setUser } = useUserContext();
   const [showFulfilled, setShowFulfilled] = useState(sessionShowFulfilled === 'true');
+  const { fetch: updateWish } = useApi<Wish>({
+    url: '/wish',
+    method: 'PUT',
+  });
 
   useEffect(() => {
     setShowFulfilled(sessionShowFulfilled === 'true');
   }, [sessionShowFulfilled]);
 
-  const updateWish = async (id: number, name: string | null) => {
-    const response = await doApiCall(`/wish/${id}`, 'PUT', {
-      giver: name,
-    });
-    const updatedWish = await response.json();
-    setWishes((wishes) =>
-      wishes?.map((wish) => (wish.id === updatedWish.id ? updatedWish : wish)),
-    );
+  const handleUpdate = async (id: number, name: string | null) => {
+    const updatedWish = await updateWish({ id, data: { giver: name } });
+
+    if (updatedWish) {
+      setWishes((wishes) =>
+        wishes?.map((wish) => (wish.id === updatedWish?.id ? updatedWish : wish)),
+      );
+    }
   };
 
   const handleFulfill = (wish: Wish) => {
@@ -51,14 +55,14 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
 
       if (!isEmpty(name)) {
         !username && setUser(name as string);
-        updateWish(wish.id, name);
+        handleUpdate(wish.id, name);
       }
     }
   };
 
   const handleReject = (wish: Wish) => {
     if (wish.id) {
-      updateWish(wish.id, null);
+      handleUpdate(wish.id, null);
     }
   };
 
@@ -115,17 +119,20 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
             />
           ))}
       </Wishlist>
-      <div className="absolute bottom-0 right-0">
-        Hier geht&apos;s zum <Link href="/admin">Admin-Bereich</Link>
+      <div className="absolute bottom-0 w-full">
+        {!!username && <span>Angemeldet als {username}</span>}
+        <span className="right-0">
+          Hier geht&apos;s zum <Link href="/admin">Admin-Bereich</Link>
+        </span>
       </div>
     </div>
   );
 };
 
-export const getStaticProps: GetStaticProps<WishlistPageProps> = async () => {
+export const getServerSideProps: GetServerSideProps<WishlistPageProps> = async () => {
   const wishes = await prisma.wish.findMany();
 
-  return { props: { wishes }, revalidate: 10 };
+  return { props: { wishes } };
 };
 
 export default WishlistPage;

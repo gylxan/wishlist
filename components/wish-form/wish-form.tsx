@@ -69,7 +69,7 @@ const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
             <RFImage />
           </div>
         )}
-        <div className="flex flex-1 flex-col gap-2">
+        <div className="flex flex-1 flex-col gap-2 overflow-hidden">
           <Input
             type="text"
             value={currentData.title}
@@ -95,6 +95,7 @@ const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
             onChange={handleChange}
             disabled={disabled}
           />
+          <div>{!!wish?.giver && `Erfüllt von ${wish.giver}`}</div>
         </div>
       </div>
       <div className="flex w-full justify-end gap-2">

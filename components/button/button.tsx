@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ComponentProps, ComponentPropsWithoutRef } from "react";
+import React, { ButtonHTMLAttributes, ComponentPropsWithoutRef } from 'react';
 import clsx from 'clsx';
 import Link, { LinkProps } from 'next/link';
 

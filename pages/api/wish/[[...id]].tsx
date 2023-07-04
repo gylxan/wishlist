@@ -28,6 +28,7 @@ async function post(req: NextApiRequest, res: NextApiResponse) {
 
 async function put(req: NextApiRequest, res: NextApiResponse) {
   if (req.query.id) {
+    console.log('PUT?');
     const id = req.query.id[0];
     try {
       const updated = await prisma.wish.update({
@@ -44,13 +45,6 @@ async function put(req: NextApiRequest, res: NextApiResponse) {
     }
   }
   res.status(404);
-
-  const id = await prisma.wish.create({
-    data: {
-      ...req.body,
-    },
-  });
-  res.status(200).json({ id });
 }
 
 async function remove(req: NextApiRequest, res: NextApiResponse) {

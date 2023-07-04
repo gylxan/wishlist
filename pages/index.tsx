@@ -101,7 +101,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
           )}
         </div>
         <p className="my-6 text-center">{process.env.NEXT_PUBLIC_DESCRIPTION}</p>
-        <div className="flex w-full justify-between text-gray-500 dark:text-gray-300">
+        <div className="flex w-full items-center justify-between text-gray-500 dark:text-gray-300">
           <span>
             {fulfilledWishes.length} / {wishes?.length} Wünschen erfüllt
           </span>
@@ -123,7 +123,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
           ?.filter(({ giver }) => (showFulfilled ? true : !giver))
           .map((wish) => (
             <WishCard
-              key={wish.title}
+              key={wish.id}
               wish={wish}
               onFulfill={handleFulfill}
               onReject={handleReject}

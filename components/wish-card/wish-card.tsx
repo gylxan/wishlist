@@ -25,17 +25,31 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
     hasGiver && isGiverLocalUser ? onReject(wish) : onFulfill(wish);
   };
 
+  const getGiverClass = (className?: string) => clsx(className, giver && 'opacity-60');
+
   return (
-    <Card className={clsx(giver && 'opacity-60')}>
-      <h2 className="text-xl font-bold text-black dark:text-white">{title}</h2>
-      <hr className="h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300" />
+    <Card className={clsx(giver && 'bg-gray-200 dark:bg-gray-600')}>
+      <h2 className={getGiverClass('text-xl font-bold text-black dark:text-white')}>
+        {title}
+      </h2>
+      <hr
+        className={getGiverClass('h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300')}
+      />
       {urlWithoutWww && (
         <p className="text-sm text-gray-400 dark:text-gray-300">{urlWithoutWww}</p>
       )}
 
-      {imageUrl && <img src={imageUrl} alt={`Product ${title}`} />}
-      <p className="min-h-[1.5em]">{giver ? `Erfüllt von ${giver}` : ' '}</p>
-      <hr className="flex-c h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300" />
+      {imageUrl && (
+        <img src={imageUrl} alt={`Product ${title}`} className={getGiverClass()} />
+      )}
+      <p className={getGiverClass('min-h-[1.5em]')}>
+        {giver ? `Erfüllt von ${giver}` : ' '}
+      </p>
+      <hr
+        className={getGiverClass(
+          'flex-c h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300',
+        )}
+      />
       <div className="flex w-full justify-between">
         <Button disabled={hasGiver && !isGiverLocalUser} onClick={handleClick}>
           {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}

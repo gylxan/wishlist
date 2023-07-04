@@ -8,6 +8,10 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <link rel="shortcut icon" href="/favicon.ico" />
+        <meta name="robots" content="index,follow" />
+        <meta property="og:title" content={process.env.NEXT_PUBLIC_SITE_TITLE} />
+        <meta property="og:description" content={process.env.NEXT_PUBLIC_DESCRIPTION} />
+        <meta property="og:type" content="website" />
       </Head>
       <UserWrapper>
         <main className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start p-4">

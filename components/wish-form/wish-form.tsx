@@ -97,14 +97,7 @@ const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
           />
         </div>
       </div>
-      <div className="flex flex-row-reverse gap-2">
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={disabled || !isValid || !isDirty}
-        >
-          Speichern
-        </Button>
+      <div className="flex w-full justify-end gap-2">
         {wish && (
           <Button
             variant="outline"
@@ -115,6 +108,13 @@ const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
             Löschen
           </Button>
         )}
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={disabled || !isValid || !isDirty}
+        >
+          Speichern
+        </Button>
       </div>
     </form>
   );

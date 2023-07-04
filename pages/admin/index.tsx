@@ -1,21 +1,26 @@
 import { Button } from '../../components/button/button';
-import { GetServerSideProps } from 'next';
 import { Wish } from '../../types/wish';
 import WishForm from '../../components/wish-form/wish-form';
-import { useState } from 'react';
-import { getWishes } from '../api/wish/[[...id]]';
-import { doApiCall } from '../../utils/api';
+import { useCallback, useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
+import Loader from '../../components/loader/loader';
 
-type AdminPageProps = {
-  wishes?: Wish[];
-};
-const AdminPage = ({ wishes }: AdminPageProps) => {
-  const [currentWishes, setWishes] = useState(wishes);
-  const { fetch: fetchWishes } = useApi<Wish[]>({
+const AdminPage = () => {
+  const [currentWishes, setWishes] = useState<Wish[]>([]);
+  const { fetch: fetchWishes, loading: isFetching } = useApi<Wish[]>({
     url: '/wish',
     method: 'GET',
   });
+
+  const fetchAndSetWishes = useCallback(async () => {
+    const wishes = await fetchWishes();
+
+    setWishes(wishes || []);
+  }, [fetchWishes]);
+
+  useEffect(() => {
+    fetchAndSetWishes();
+  }, [fetchAndSetWishes]);
 
   const { fetch: deleteWish, loading: isDeleting } = useApi({
     url: '/wish',
@@ -32,15 +37,10 @@ const AdminPage = ({ wishes }: AdminPageProps) => {
     method: 'POST',
   });
 
-  const loadWishes = async () => {
-    const wishes = await fetchWishes();
-
-    setWishes(wishes || []);
-  };
   const handleDelete = async (id: number) => {
     await deleteWish({ id });
 
-    await loadWishes();
+    await fetchAndSetWishes();
   };
 
   const handleSubmit = async (data: Wish) => {
@@ -49,12 +49,14 @@ const AdminPage = ({ wishes }: AdminPageProps) => {
     } else {
       await createWish({ data });
     }
-    await loadWishes();
+    await fetchAndSetWishes();
   };
 
   return (
     <div className="relative flex w-full flex-col items-center gap-8">
+      <h1 className="text-xl font-bold">Trage hier deine Wünsche ein</h1>
       <div className="flex w-full flex-col gap-4">
+        {isFetching && <Loader />}
         {currentWishes?.map((wish) => (
           <WishForm
             disabled={isDeleting || isUpdating || isCreating}
@@ -72,7 +74,3 @@ const AdminPage = ({ wishes }: AdminPageProps) => {
 };
 
 export default AdminPage;
-
-export const getServerSideProps: GetServerSideProps<AdminPageProps> = async () => {
-  return { props: { wishes: await getWishes() } };
-};

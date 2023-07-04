@@ -1,5 +1,5 @@
 import { doApiCall, type Method } from '../utils/api';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 type UseApiOptions = {
   method: Method;
@@ -24,22 +24,39 @@ export const useApi = <T = unknown>({ url, method }: UseApiOptions) => {
     data: null,
   });
 
-  async function fetch({ id, data }: UseApiFetchParams = {}) {
-    setState((state) => ({ ...state, error: null, loading: true }));
-    try {
-      const response = await doApiCall([url, id].filter(Boolean).join('/'), method, data);
-      setState((state) => ({ ...state, data: response }));
-      return response as T;
-    } catch (e) {
+  const fetch = useCallback(
+    async ({ id, data }: UseApiFetchParams = {}) => {
       setState((state) => ({
         ...state,
-        error: e instanceof Error ? e.message : String(e),
+        error: null,
+        loading: true,
       }));
-    } finally {
-      setState((state) => ({ ...state, loading: false }));
-    }
-    return null;
-  }
+      try {
+        const response = await doApiCall(
+          [url, id].filter(Boolean).join('/'),
+          method,
+          data,
+        );
+        setState((state) => ({
+          ...state,
+          data: response,
+        }));
+        return response as T;
+      } catch (e) {
+        setState((state) => ({
+          ...state,
+          error: e instanceof Error ? e.message : String(e),
+        }));
+      } finally {
+        setState((state) => ({
+          ...state,
+          loading: false,
+        }));
+      }
+      return null;
+    },
+    [method, url],
+  );
 
   return { ...state, fetch };
 };

@@ -10,9 +10,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <UserWrapper>
-        <div className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start p-4">
+        <main className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start p-4">
           <Component {...pageProps} />
-        </div>
+        </main>
       </UserWrapper>
     </>
   );

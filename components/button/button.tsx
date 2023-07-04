@@ -1,4 +1,4 @@
-import React, { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLProps } from 'react';
+import React, { ButtonHTMLAttributes, ComponentProps, ComponentPropsWithoutRef } from "react";
 import clsx from 'clsx';
 import Link, { LinkProps } from 'next/link';
 
@@ -15,15 +15,13 @@ const sizeClasses = {
 type Variant = keyof typeof variantClasses;
 type Size = keyof typeof sizeClasses;
 
-type ButtonLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> &
-  LinkProps & {
-    children?: React.ReactNode;
-  } & React.RefAttributes<HTMLAnchorElement>;
+type ButtonLinkProps = ComponentPropsWithoutRef<'a'> & LinkProps;
 
-export type ButtonProps = (HTMLProps<HTMLButtonElement> | ButtonLinkProps) & {
+export type ButtonProps = (ComponentPropsWithoutRef<'button'> | ButtonLinkProps) & {
   variant?: Variant;
   size?: Size;
 };
+
 export const Button = ({
   children,
   variant = 'primary',

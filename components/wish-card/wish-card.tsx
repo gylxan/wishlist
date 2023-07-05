@@ -28,42 +28,48 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
   const getGiverClass = (className?: string) => clsx(className, giver && 'opacity-60');
 
   return (
-    <Card className={clsx(giver && 'bg-gray-200 dark:bg-gray-600')}>
-      <h2 className={getGiverClass('text-xl font-bold text-black dark:text-white')}>
-        {title}
-      </h2>
-      <hr
-        className={getGiverClass('h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300')}
-      />
-      {urlWithoutWww && (
-        <p className="text-sm text-gray-400 dark:text-gray-300">{urlWithoutWww}</p>
-      )}
+    <Card className={clsx('justify-between', giver && 'bg-gray-200 dark:bg-gray-600')}>
+      <div className="flex w-full flex-col items-center gap-3 text-center">
+        <h2 className={getGiverClass('text-xl font-bold text-black dark:text-white')}>
+          {title}
+        </h2>
+        <hr
+          className={getGiverClass(
+            'h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300',
+          )}
+        />
+        {urlWithoutWww && (
+          <p className="text-sm text-gray-400 dark:text-gray-300">{urlWithoutWww}</p>
+        )}
+      </div>
 
       {imageUrl && (
         <img src={imageUrl} alt={`Product ${title}`} className={getGiverClass()} />
       )}
-      <p className={getGiverClass('min-h-[1.5em]')}>
-        {giver ? `Erfüllt von ${giver}` : ' '}
-      </p>
-      <hr
-        className={getGiverClass(
-          'flex-c h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300',
-        )}
-      />
-      <div className="flex w-full justify-between">
-        <Button disabled={hasGiver && !isGiverLocalUser} onClick={handleClick}>
-          {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}
-        </Button>
-        {!!url && (
-          <Button
-            variant="outline"
-            href={url}
-            target="_blank"
-            className="flex items-center"
-          >
-            Zum Produkt <ExternalLink className="h-4" />
+      <div className="flex w-full flex-col items-center gap-3 text-center">
+        <p className={getGiverClass('min-h-[1.5em]')}>
+          {giver ? `Erfüllt von ${giver}` : ' '}
+        </p>
+        <hr
+          className={getGiverClass(
+            'flex-c h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300',
+          )}
+        />
+        <div className="flex w-full justify-between">
+          <Button disabled={hasGiver && !isGiverLocalUser} onClick={handleClick}>
+            {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}
           </Button>
-        )}
+          {!!url && (
+            <Button
+              variant="outline"
+              href={url}
+              target="_blank"
+              className="flex items-center"
+            >
+              Zum Produkt <ExternalLink className="h-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </Card>
   );

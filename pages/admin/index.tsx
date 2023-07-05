@@ -15,7 +15,6 @@ const AdminPage = () => {
   const fetchAndSetWishes = useCallback(async () => {
     const wishes = await fetchWishes();
 
-    console.log(wishes)
     setWishes(wishes || []);
   }, [fetchWishes]);
 

@@ -3,6 +3,7 @@ import { Wish } from '../../types/wish';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Image as RFImage } from 'react-feather';
 import { Input } from '../input/input';
+import { FormLabel } from '../form-label/form-label';
 
 type WishFormProps = {
   wish?: Wish;
@@ -58,44 +59,67 @@ const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
 
   return (
     <form
-      className="flex flex-col gap-4 rounded-md border-2 border-blue-900 p-2 dark:border-white"
+      className="flex flex-col gap-4 rounded-md bg-gray-400 p-2 dark:bg-gray-700"
       onSubmit={handleSubmit}
     >
       <div className="flex gap-4">
         {currentData.imageUrl ? (
-          <img src={currentData.imageUrl} width="140px" alt={currentData.title} />
+          <div>
+            <img src={currentData.imageUrl} width="140px" alt={currentData.title} />
+          </div>
         ) : (
           <div className="flex h-[140px] w-[140px] items-center justify-center border-2">
             <RFImage />
           </div>
         )}
         <div className="flex flex-1 flex-col gap-2 overflow-hidden">
-          <Input
-            type="text"
-            value={currentData.title}
-            name="title"
-            placeholder="Titel"
-            onChange={handleChange}
-            disabled={disabled}
-            required
-          />
-          <Input
-            type="url"
-            value={currentData.url || ''}
-            name="url"
-            placeholder="URL"
-            onChange={handleChange}
-            disabled={disabled}
-          />
-          <Input
-            type="url"
-            value={currentData.imageUrl || ''}
-            name="imageUrl"
-            placeholder="Bild URL"
-            onChange={handleChange}
-            disabled={disabled}
-          />
-          <div>{!!wish?.giver && `Erfüllt von ${wish.giver}`}</div>
+          <div className="mb-4">
+            <FormLabel htmlFor="title">Titel</FormLabel>
+            <Input
+              id="title"
+              type="text"
+              value={currentData.title}
+              name="title"
+              placeholder="Titel"
+              onChange={handleChange}
+              disabled={disabled}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <FormLabel htmlFor="url">URL</FormLabel>
+            <Input
+              id="url"
+              type="url"
+              value={currentData.url || ''}
+              name="url"
+              placeholder="URL"
+              onChange={handleChange}
+              disabled={disabled}
+            />
+          </div>
+          <div className="mb-4">
+            <FormLabel htmlFor="imageUrl">Bild URL</FormLabel>
+            <Input
+              id="imageUrl"
+              type="url"
+              value={currentData.imageUrl || ''}
+              name="imageUrl"
+              placeholder="Bild URL"
+              onChange={handleChange}
+              disabled={disabled}
+            />
+          </div>
+          <div className="flex">
+            {!!wish?.giver && (
+              <>
+                <span className="mr-1 block text-center font-bold text-gray-700 dark:text-gray-200">
+                  Erfüllt von:{' '}
+                </span>
+                {wish.giver}
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex w-full justify-end gap-2">

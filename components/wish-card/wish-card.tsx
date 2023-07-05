@@ -13,7 +13,7 @@ type WishCardProps = {
 };
 
 export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
-  const { url, title, imageUrl, giver } = wish;
+  const { url, title, description, imageUrl, giver } = wish;
   const newUrl = url ? new URL(url) : undefined;
   const urlWithoutWww = newUrl?.hostname.replace('www.', '');
   const { username } = useUserContext();
@@ -43,9 +43,12 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
         )}
       </div>
 
-      {imageUrl && (
-        <img src={imageUrl} alt={`Product ${title}`} className={getGiverClass()} />
-      )}
+      <div className="flex w-full flex-col items-center gap-3 text-center">
+        {imageUrl && (
+          <img src={imageUrl} alt={`Product ${title}`} className={getGiverClass()} />
+        )}
+        {description && <p className="italic">&quot;{description}&quot;</p>}
+      </div>
       <div className="flex w-full flex-col items-center gap-3 text-center">
         <p className={getGiverClass('min-h-[1.5em]')}>
           {giver ? `Erfüllt von ${giver}` : ' '}

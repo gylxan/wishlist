@@ -7,6 +7,7 @@ import { FormLabel } from '../form-label/form-label';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import { FormErrorMessage } from '../form-error-message/form-error-message';
+import { Textarea } from '../textarea/textarea';
 
 type WishFormProps = {
   wish?: Wish;
@@ -21,8 +22,10 @@ const WishSchema = object().shape({
   imageUrl: string()
     .url('Gib eine gültige URL ein')
     .required('Gib eine gültige Bild-URL ein'),
+  description: string(),
 });
 
+const RequiredMarker = () => <span className="text-red-500">*</span>;
 const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
   const [isDeleting, setDeleting] = useState(false);
 
@@ -46,6 +49,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
           imageUrl: '',
           title: '',
           url: '',
+          description: '',
         }
       }
       onSubmit={handleSubmit}
@@ -77,7 +81,10 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
             )}
             <div className="flex flex-1 flex-col gap-2 overflow-hidden">
               <div className="mb-4">
-                <FormLabel htmlFor="title">Titel</FormLabel>
+                <FormLabel htmlFor="title">
+                  Titel
+                  <RequiredMarker />
+                </FormLabel>
                 <Input
                   id="title"
                   type="text"
@@ -86,13 +93,32 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
                   placeholder="Titel"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  required
                 />
                 {errors.title && touched.title && (
                   <FormErrorMessage>{errors.title}</FormErrorMessage>
                 )}
               </div>
               <div className="mb-4">
-                <FormLabel htmlFor="url">URL</FormLabel>
+                <FormLabel htmlFor="description">Beschreibung</FormLabel>
+                <Textarea
+                  rows={2}
+                  id="description"
+                  value={values.description}
+                  name="description"
+                  placeholder="Beschreibung"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.description && touched.description && (
+                  <FormErrorMessage>{errors.description}</FormErrorMessage>
+                )}
+              </div>
+              <div className="mb-4">
+                <FormLabel htmlFor="url">
+                  URL
+                  <RequiredMarker />
+                </FormLabel>
                 <Input
                   id="url"
                   type="url"
@@ -107,7 +133,10 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
                 )}
               </div>
               <div className="mb-4">
-                <FormLabel htmlFor="imageUrl">Bild URL</FormLabel>
+                <FormLabel htmlFor="imageUrl">
+                  Bild URL
+                  <RequiredMarker />
+                </FormLabel>
                 <Input
                   id="imageUrl"
                   type="url"

@@ -56,7 +56,7 @@ const AdminPage = () => {
     <div className="relative flex w-full flex-col items-center gap-8">
       <h1 className="text-xl font-bold">Trage hier deine Wünsche ein</h1>
       <div className="flex w-full flex-col gap-4">
-        {isFetching && <Loader />}
+        <WishForm onSubmit={handleSubmit} onDelete={handleDelete} />
         {currentWishes?.map((wish) => (
           <WishForm
             disabled={isDeleting || isUpdating || isCreating}
@@ -66,8 +66,8 @@ const AdminPage = () => {
             onDelete={handleDelete}
           />
         ))}
-        <WishForm onSubmit={handleSubmit} onDelete={handleDelete} />
       </div>
+      {isFetching && <Loader>Lade Wünsche...</Loader>}
       <Button href={'/'}>Zurück zur Startseite</Button>
     </div>
   );

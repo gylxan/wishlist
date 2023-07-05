@@ -130,7 +130,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
             />
           ))}
       </Wishlist>
-      <div className="mt-auto flex w-full justify-between pt-8">
+      <div className="mt-auto flex w-full flex-col items-center justify-between gap-4 pt-8 md:flex-row">
         <span>
           {username ? (
             `Angemeldet als ${username}`

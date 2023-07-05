@@ -15,6 +15,7 @@ const AdminPage = () => {
   const fetchAndSetWishes = useCallback(async () => {
     const wishes = await fetchWishes();
 
+    console.log(wishes)
     setWishes(wishes || []);
   }, [fetchWishes]);
 
@@ -22,17 +23,17 @@ const AdminPage = () => {
     fetchAndSetWishes();
   }, [fetchAndSetWishes]);
 
-  const { fetch: deleteWish, loading: isDeleting } = useApi({
+  const { fetch: deleteWish } = useApi({
     url: '/wish',
     method: 'DELETE',
   });
 
-  const { fetch: updateWish, loading: isUpdating } = useApi({
+  const { fetch: updateWish } = useApi({
     url: '/wish',
     method: 'PUT',
   });
 
-  const { fetch: createWish, loading: isCreating } = useApi({
+  const { fetch: createWish } = useApi({
     url: '/wish',
     method: 'POST',
   });
@@ -59,7 +60,6 @@ const AdminPage = () => {
         <WishForm onSubmit={handleSubmit} onDelete={handleDelete} />
         {currentWishes?.map((wish) => (
           <WishForm
-            disabled={isDeleting || isUpdating || isCreating}
             key={wish.id}
             onSubmit={handleSubmit}
             wish={wish}

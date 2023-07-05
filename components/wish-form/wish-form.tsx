@@ -1,147 +1,160 @@
 import { Button } from '../button/button';
 import { Wish } from '../../types/wish';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { Image as RFImage } from 'react-feather';
 import { Input } from '../input/input';
 import { FormLabel } from '../form-label/form-label';
+import { Formik, FormikHelpers } from 'formik';
+import { object, string } from 'yup';
+import { FormErrorMessage } from '../form-error-message/form-error-message';
 
 type WishFormProps = {
   wish?: Wish;
   disabled?: boolean;
   onSubmit: (data: Wish) => Promise<void>;
-  onDelete: (id: number) => void;
+  onDelete: (id: number) => Promise<void>;
 };
 
-const WishForm = ({ wish, disabled, onSubmit, onDelete }: WishFormProps) => {
-  const [isDirty, setDirty] = useState(false);
-  const [currentData, setCurrentData] = useState(
-    wish ?? {
-      imageUrl: '',
-      title: '',
-      url: '',
-    },
-  );
+const WishSchema = object().shape({
+  title: string().min(2, 'Zu kurz!').required('Gib einen gültigen Titel ein'),
+  url: string().url('Gib eine gültige URL ein').required('Gib eine gültige URL ein'),
+  imageUrl: string()
+    .url('Gib eine gültige URL ein')
+    .required('Gib eine gültige Bild-URL ein'),
+});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const name = e.currentTarget.name;
-    const value = e.currentTarget.value;
-    setDirty(!wish || wish[name as keyof Wish] !== value);
+const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
+  const [isDeleting, setDeleting] = useState(false);
 
-    setCurrentData((data) => ({
-      ...data,
-      [name]: value,
-    }));
+  const handleSubmit = async (values: Wish, { resetForm }: FormikHelpers<any>) => {
+    await onSubmit(values);
+    !wish && resetForm();
   };
 
-  const isValid = Object.values(currentData).every(
-    (value) => value && (typeof value !== 'number' ? value.trim() !== '' : true),
-  );
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (isValid) {
-      await onSubmit(currentData);
-      setDirty(false);
-      setCurrentData({
-        imageUrl: '',
-        title: '',
-        url: '',
-      });
-    }
-  };
-
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (wish && wish.id) {
-      onDelete(wish.id);
+      setDeleting(true);
+      await onDelete(wish.id);
+      setDeleting(false);
     }
   };
 
   return (
-    <form
-      className="flex flex-col gap-4 rounded-md bg-gray-400 p-2 dark:bg-gray-700"
+    <Formik
+      initialValues={
+        wish ?? {
+          imageUrl: '',
+          title: '',
+          url: '',
+        }
+      }
       onSubmit={handleSubmit}
+      validationSchema={WishSchema}
     >
-      <div className="flex gap-4">
-        {currentData.imageUrl ? (
-          <div>
-            <img src={currentData.imageUrl} width="140px" alt={currentData.title} />
-          </div>
-        ) : (
-          <div className="flex h-[140px] w-[140px] items-center justify-center border-2">
-            <RFImage />
-          </div>
-        )}
-        <div className="flex flex-1 flex-col gap-2 overflow-hidden">
-          <div className="mb-4">
-            <FormLabel htmlFor="title">Titel</FormLabel>
-            <Input
-              id="title"
-              type="text"
-              value={currentData.title}
-              name="title"
-              placeholder="Titel"
-              onChange={handleChange}
-              disabled={disabled}
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <FormLabel htmlFor="url">URL</FormLabel>
-            <Input
-              id="url"
-              type="url"
-              value={currentData.url || ''}
-              name="url"
-              placeholder="URL"
-              onChange={handleChange}
-              disabled={disabled}
-            />
-          </div>
-          <div className="mb-4">
-            <FormLabel htmlFor="imageUrl">Bild URL</FormLabel>
-            <Input
-              id="imageUrl"
-              type="url"
-              value={currentData.imageUrl || ''}
-              name="imageUrl"
-              placeholder="Bild URL"
-              onChange={handleChange}
-              disabled={disabled}
-            />
-          </div>
-          <div className="flex">
-            {!!wish?.giver && (
-              <>
-                <span className="mr-1 block text-center font-bold text-gray-700 dark:text-gray-200">
-                  Erfüllt von:{' '}
-                </span>
-                {wish.giver}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="flex w-full justify-end gap-2">
-        {wish && (
-          <Button
-            variant="outline"
-            type="button"
-            onClick={handleDelete}
-            disabled={disabled}
-          >
-            Löschen
-          </Button>
-        )}
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={disabled || !isValid || !isDirty}
+      {({
+        values,
+        errors,
+        handleSubmit,
+        touched,
+        handleChange,
+        handleBlur,
+        isSubmitting,
+        dirty,
+      }) => (
+        <form
+          className="flex flex-col gap-4 rounded-md bg-gray-400 p-2 dark:bg-gray-700"
+          onSubmit={handleSubmit}
         >
-          Speichern
-        </Button>
-      </div>
-    </form>
+          <div className="flex gap-4">
+            {values.imageUrl ? (
+              <div>
+                <img src={values.imageUrl} width="140px" alt={values.title} />
+              </div>
+            ) : (
+              <div className="flex h-[140px] w-[140px] items-center justify-center border-2">
+                <RFImage />
+              </div>
+            )}
+            <div className="flex flex-1 flex-col gap-2 overflow-hidden">
+              <div className="mb-4">
+                <FormLabel htmlFor="title">Titel</FormLabel>
+                <Input
+                  id="title"
+                  type="text"
+                  value={values.title}
+                  name="title"
+                  placeholder="Titel"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.title && touched.title && (
+                  <FormErrorMessage>{errors.title}</FormErrorMessage>
+                )}
+              </div>
+              <div className="mb-4">
+                <FormLabel htmlFor="url">URL</FormLabel>
+                <Input
+                  id="url"
+                  type="url"
+                  value={values.url || ''}
+                  name="url"
+                  placeholder="URL"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.url && touched.url && (
+                  <FormErrorMessage>{errors.url}</FormErrorMessage>
+                )}
+              </div>
+              <div className="mb-4">
+                <FormLabel htmlFor="imageUrl">Bild URL</FormLabel>
+                <Input
+                  id="imageUrl"
+                  type="url"
+                  value={values.imageUrl || ''}
+                  name="imageUrl"
+                  placeholder="Bild URL"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {errors.imageUrl && touched.imageUrl && (
+                  <FormErrorMessage>{errors.imageUrl}</FormErrorMessage>
+                )}
+              </div>
+              <div className="flex">
+                {!!wish?.giver && (
+                  <>
+                    <span className="mr-1 block text-center font-bold text-gray-700 dark:text-gray-200">
+                      Erfüllt von:
+                    </span>
+                    {wish.giver}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex w-full justify-end gap-2">
+            {wish && (
+              <Button
+                variant="outline"
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                Löschen
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={isSubmitting || isDeleting || (wish && !dirty)}
+            >
+              Speichern
+            </Button>
+          </div>
+        </form>
+      )}
+    </Formik>
   );
 };
 

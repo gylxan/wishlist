@@ -20,10 +20,12 @@
     "@prisma/client": "^4.16.2",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
+    "formik": "^2.4.2",
     "next": "^13.4.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-feather": "^2.0.10"
+    "react-feather": "^2.0.10",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@types/node": "^20.3.2",

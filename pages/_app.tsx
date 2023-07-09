@@ -7,6 +7,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
+        <title>{process.env.NEXT_PUBLIC_SITE_TITLE}</title>
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="robots" content="index,follow" />
         <meta property="og:title" content={process.env.NEXT_PUBLIC_SITE_TITLE} />

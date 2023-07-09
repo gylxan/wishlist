@@ -58,7 +58,7 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
             'flex-c h-[1px] w-full border-0 bg-gray-600 dark:bg-gray-300',
           )}
         />
-        <div className="flex w-full justify-between">
+        <div className="flex w-full justify-between gap-2">
           <Button disabled={hasGiver && !isGiverLocalUser} onClick={handleClick}>
             {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}
           </Button>

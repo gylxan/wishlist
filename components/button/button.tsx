@@ -32,7 +32,7 @@ export const Button = ({
   const classNames = clsx(
     variantClasses[variant],
     sizeClasses[size],
-    'rounded transition-colors duration-200 inline-block disabled:cursor-not-allowed disabled:opacity-60',
+    'rounded transition-colors duration-200 inline-flex gap-1 items-center disabled:cursor-not-allowed disabled:opacity-60',
     className,
   );
   if ('href' in otherProps) {

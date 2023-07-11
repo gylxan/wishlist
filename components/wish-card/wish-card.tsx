@@ -5,11 +5,13 @@ import { Wish } from '../../types/wish';
 import clsx from 'clsx';
 import { isUserLocalUser } from '../../utils/user';
 import { useUserContext } from '../../context/user';
+import { useState } from 'react';
+import { Spinner } from '../spinner/spinner';
 
 type WishCardProps = {
   wish: Wish;
-  onFulfill: (wish: Wish) => void;
-  onReject: (wish: Wish) => void;
+  onFulfill: (wish: Wish) => Promise<void>;
+  onReject: (wish: Wish) => Promise<void>;
 };
 
 export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
@@ -17,12 +19,15 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
   const newUrl = url ? new URL(url) : undefined;
   const urlWithoutWww = newUrl?.hostname.replace('www.', '');
   const { username } = useUserContext();
+  const [isLoading, setLoading] = useState(false);
 
   const hasGiver = !!giver;
   const isGiverLocalUser = isUserLocalUser(giver ?? null, username);
 
-  const handleClick = () => {
-    hasGiver && isGiverLocalUser ? onReject(wish) : onFulfill(wish);
+  const handleClick = async () => {
+    setLoading(true);
+    await (hasGiver && isGiverLocalUser ? onReject(wish) : onFulfill(wish));
+    setLoading(false);
   };
 
   const getGiverClass = (className?: string) => clsx(className, giver && 'opacity-60');
@@ -59,7 +64,11 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
           )}
         />
         <div className="flex w-full justify-between gap-2">
-          <Button disabled={hasGiver && !isGiverLocalUser} onClick={handleClick}>
+          <Button
+            disabled={(hasGiver && !isGiverLocalUser) || isLoading}
+            onClick={handleClick}
+          >
+            {isLoading && <Spinner size="sm" color="white" />}
             {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}
           </Button>
           {!!url && (

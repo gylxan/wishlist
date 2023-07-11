@@ -56,7 +56,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
     return null;
   };
 
-  const handleFulfill = (wish: Wish) => {
+  const handleFulfill = async (wish: Wish) => {
     if (!wish.giver && wish.id) {
       let name = username;
 
@@ -66,14 +66,14 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
 
       if (!isEmpty(name)) {
         !username && setUser(name as string);
-        handleUpdate(wish.id, name);
+        await handleUpdate(wish.id, name);
       }
     }
   };
 
-  const handleReject = (wish: Wish) => {
+  const handleReject = async (wish: Wish) => {
     if (wish.id) {
-      handleUpdate(wish.id, null);
+      await handleUpdate(wish.id, null);
     }
   };
 
@@ -83,7 +83,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const differenceInDays = dateUntil ? getDifferenceInDays(new Date(), dateUntil) : 0;
 
   return (
-    <div className="relative flex min-h-screen flex-col gap-4 pb-20">
+    <div className="relative flex min-h-screen flex-col gap-4">
       <Card>
         <span className="text-3xl font-bold">Endlich es es so weit! 🎉</span>
         <div className="flex flex-row flex-wrap justify-center gap-4">

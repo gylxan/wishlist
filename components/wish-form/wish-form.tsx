@@ -104,7 +104,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
                 <Textarea
                   rows={2}
                   id="description"
-                  value={values.description}
+                  value={values.description || ''}
                   name="description"
                   placeholder="Beschreibung"
                   onChange={handleChange}

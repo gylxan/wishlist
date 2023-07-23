@@ -1,19 +1,21 @@
 .loader,
 .loader:before,
 .loader:after {
-    background: #ffffff;
+    @apply bg-black dark:bg-white;
     animation: load1 1s infinite ease-in-out;
     width: 1em;
     height: 4em;
 }
 .loader {
-    color: #ffffff;
+    @apply text-black dark:text-white;
     text-indent: -9999em;
     position: relative;
     font-size: 11px;
     transform: translateZ(0);
     animation-delay: -0.16s;
 }
+
+
 .loader:before,
 .loader:after {
     position: absolute;

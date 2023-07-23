@@ -66,7 +66,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
         dirty,
       }) => (
         <form
-          className="flex flex-col gap-4 rounded-md bg-gray-400 p-2 dark:bg-gray-700"
+          className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-2 shadow dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           onSubmit={handleSubmit}
         >
           <div className="flex gap-4">

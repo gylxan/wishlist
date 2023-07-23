@@ -3,13 +3,13 @@ import clsx from 'clsx';
 import Link, { LinkProps } from 'next/link';
 
 const variantClasses = {
-  primary: `bg-blue-500 hover:bg-blue-700 active:bg-blue-900 text-white font-bold disabled:bg-blue-500`,
-  outline: `bg-transparent hover:bg-blue-500 active:bg-blue-900 text-blue-700 dark:text-white font-semibold hover:text-white border border-blue-500 hover:border-transparent disabled:bg-transparent disabled:hover:border-blue-500`,
+  primary: `text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800`,
+  outline: `text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center mr-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800`,
 } as const;
 
 const sizeClasses = {
-  sm: `py-1 px-2 text-sm`,
-  md: `py-2 px-4 text-md`,
+  sm: `py-1 px-2 text-xs`,
+  md: `py-2.5 px-5 text-sm`,
 } as const;
 
 type Variant = keyof typeof variantClasses;

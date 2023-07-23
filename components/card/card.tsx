@@ -6,7 +6,7 @@ export const Card = ({ className, ...rest }: CardProps) => {
   return (
     <div
       className={clsx(
-        'flex flex-col items-center gap-3 rounded-md bg-white p-2 text-black shadow-md shadow-gray-800 dark:bg-gray-700 dark:text-white',
+        'flex flex-col items-center gap-3 rounded-lg border border-gray-200 bg-white p-2 text-black shadow dark:border-gray-700 dark:bg-gray-800 dark:text-white',
         className,
       )}
       {...rest}

@@ -43,7 +43,7 @@ const SignInPage = () => {
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center">
-      <Card className="flex min-w-[500px] flex-col items-center p-8 shadow-md">
+      <Card className="flex w-full flex-col items-center p-8 shadow-md sm:max-w-2xl">
         <Formik
           initialValues={{
             email: '',
@@ -121,12 +121,12 @@ export default SignInPage;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
   if (session) {
-    //if session exists redirect to home
-    context.res.writeHead(302, { Location: '/' });
-    context.res.end();
-
-    //do not return any session.
-    return { props: { session } };
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
   }
-  return { props: {} };
+  return { props: { session } };
 }

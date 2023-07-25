@@ -83,13 +83,14 @@ export default AdminPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
+  console.warn(session);
   if (!session) {
-    //if not exists, return a temporary 302 and replace the url with the given in Location.
-    context.res.writeHead(302, { Location: '/signin?callbackUrl=/admin' });
-    context.res.end();
-
-    //do not return any session.
-    return { props: {} };
+    return {
+      redirect: {
+        destination: '/signin?callbackUrl=/admin',
+        permanent: false,
+      },
+    };
   }
   return { props: { session } };
 }

@@ -5,7 +5,7 @@ import { Image as RFImage } from 'react-feather';
 import { Input } from '../input/input';
 import { FormLabel } from '../form-label/form-label';
 import { Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
+import { object, string, lazy } from 'yup';
 import { FormErrorMessage } from '../form-error-message/form-error-message';
 import { Textarea } from '../textarea/textarea';
 import { RequiredMarker } from '../required-marker/required-marker';
@@ -20,9 +20,16 @@ type WishFormProps = {
 const WishSchema = object().shape({
   title: string().min(2, 'Zu kurz!').required('Gib einen gültigen Titel ein'),
   url: string().url('Gib eine gültige URL ein').required('Gib eine gültige URL ein'),
-  imageUrl: string()
-    .url('Gib eine gültige URL ein')
-    .required('Gib eine gültige Bild-URL ein'),
+  imageUrl: lazy((value) =>
+    /^data/.test(value)
+      ? string().matches(
+          /^data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,([a-z0-9!$&',()*+;=\-._~:@/?%\s]*)$/i,
+          'Muss eine validate data-URL sein',
+        )
+      : string()
+          .url('Gib eine gültige URL ein')
+          .required('Gib eine gültige Bild-URL ein'),
+  ),
   description: string(),
 });
 const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
@@ -65,20 +72,21 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
         dirty,
       }) => (
         <form
-          className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-2 shadow dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           onSubmit={handleSubmit}
         >
-          <div className="flex gap-4">
+          {/* Maybe break to column on small screens */}
+          <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
             {values.imageUrl ? (
-              <div>
-                <img src={values.imageUrl} width="140px" alt={values.title} />
+              <div className="w-[200px]">
+                <img src={values.imageUrl} width="100%" alt={values.title} />
               </div>
             ) : (
               <div className="flex h-[140px] w-[140px] items-center justify-center border-2">
                 <RFImage />
               </div>
             )}
-            <div className="flex flex-1 flex-col gap-2 overflow-hidden">
+            <div className="flex w-full flex-1 flex-col gap-2 overflow-hidden">
               <div className="mb-4">
                 <FormLabel htmlFor="title">
                   Titel
@@ -169,6 +177,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
                 onClick={handleDelete}
                 disabled={isDeleting}
               >
+                {/* TODO Spinner */}
                 Löschen
               </Button>
             )}
@@ -177,6 +186,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
               type="submit"
               disabled={isSubmitting || isDeleting || (wish && !dirty)}
             >
+              {/* TODO Spinner */}
               Speichern
             </Button>
           </div>

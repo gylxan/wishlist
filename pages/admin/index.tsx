@@ -55,7 +55,7 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="relative flex w-full flex-col items-center gap-8">
+    <div className="relative flex w-full flex-col items-center gap-8 p-4">
       <h1 className="text-xl font-bold">Trage hier deine Wünsche ein</h1>
       <div className="flex w-full flex-col gap-4">
         <WishForm onSubmit={handleSubmit} onDelete={handleDelete} />

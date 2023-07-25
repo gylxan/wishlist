@@ -83,7 +83,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const differenceInDays = dateUntil ? getDifferenceInDays(new Date(), dateUntil) : 0;
 
   return (
-    <div className="relative flex min-h-screen flex-col gap-4">
+    <div className="relative flex min-h-screen flex-col gap-4 p-4">
       <Card>
         <span className="text-3xl font-bold">Endlich es es so weit! 🎉</span>
         <div className="flex flex-row flex-wrap justify-center gap-4">

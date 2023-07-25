@@ -20,7 +20,7 @@ export default function App({
         <meta property="og:site_name" content={process.env.NEXT_PUBLIC_SITE_TITLE} />
       </Head>
       <UserWrapper>
-        <main className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start p-4">
+        <main className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start">
           <Component {...pageProps} />
         </main>
       </UserWrapper>

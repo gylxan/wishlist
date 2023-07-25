@@ -1,6 +1,9 @@
-import NextAuth from 'next-auth';
+import NextAuth, { Session } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { JWT } from 'next-auth/jwt';
 
+type User = { email?: string | undefined | null };
+type ExtendedSession = Session & { user: User };
 export const authOptions = {
   // Configure one or more authentication providers
   providers: [
@@ -22,27 +25,23 @@ export const authOptions = {
           password === process.env.NEXT_ADMIN_PASSWORD;
 
         if (!everythingCorrect) {
-          throw new Error('Unültige E-Mailadresse oder falsches Passwort');
+          throw new Error('Ungültige E-Mailadresse oder falsches Passwort');
         }
-        return { username: 'admin', email };
+        return { username: 'admin', email, id: '1' };
       },
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
-      console.warn(user)
+    jwt: async ({ token, user }: { token: JWT; user?: User }) => {
       if (user) {
         token.email = user.email;
-        token.username = user.username;
       }
 
       return token;
     },
-    session: ({ session, token, user }) => {
+    session: ({ session, token }: { session: Session; token: JWT }): Session => {
       if (token) {
-        session.user.email = token.email;
-        session.user.username = token.username;
-        session.user.accessToken = token.accessToken;
+        (session as ExtendedSession).user.email = token.email;
       }
       return session;
     },

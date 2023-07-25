@@ -8,6 +8,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import { FormErrorMessage } from '../form-error-message/form-error-message';
 import { Textarea } from '../textarea/textarea';
+import { RequiredMarker } from '../required-marker/required-marker';
 
 type WishFormProps = {
   wish?: Wish;
@@ -24,8 +25,6 @@ const WishSchema = object().shape({
     .required('Gib eine gültige Bild-URL ein'),
   description: string(),
 });
-
-const RequiredMarker = () => <span className="text-red-500">*</span>;
 const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
   const [isDeleting, setDeleting] = useState(false);
 

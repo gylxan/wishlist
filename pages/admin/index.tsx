@@ -4,6 +4,8 @@ import WishForm from '../../components/wish-form/wish-form';
 import { useCallback, useEffect, useState } from 'react';
 import { useApi } from '../../hooks/useApi';
 import Loader from '../../components/loader/loader';
+import { getSession, signOut } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
 
 const AdminPage = () => {
   const [currentWishes, setWishes] = useState<Wish[]>([]);
@@ -67,9 +69,27 @@ const AdminPage = () => {
         ))}
       </div>
       {isFetching && <Loader>Lade Wünsche...</Loader>}
-      <Button href={'/'}>Zurück zur Startseite</Button>
+      <div className="flex gap-2">
+        <Button href={'/'}>Zurück zur Startseite</Button>
+        <Button variant="outline" onClick={() => signOut()}>
+          Abmelden
+        </Button>
+      </div>
     </div>
   );
 };
 
 export default AdminPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getSession(context);
+  if (!session) {
+    //if not exists, return a temporary 302 and replace the url with the given in Location.
+    context.res.writeHead(302, { Location: '/signin?callbackUrl=/admin' });
+    context.res.end();
+
+    //do not return any session.
+    return { props: {} };
+  }
+  return { props: { session } };
+}

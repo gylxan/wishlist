@@ -2,10 +2,14 @@ import 'styles/globals.css';
 import { AppProps } from 'next/app';
 import { UserWrapper } from '../context/user';
 import Head from 'next/head';
+import { SessionProvider } from 'next-auth/react';
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
-    <>
+    <SessionProvider session={session}>
       <Head>
         <title>{process.env.NEXT_PUBLIC_SITE_TITLE}</title>
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -20,6 +24,6 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </main>
       </UserWrapper>
-    </>
+    </SessionProvider>
   );
 }

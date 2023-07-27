@@ -9,6 +9,7 @@ import { object, string, lazy } from 'yup';
 import { FormErrorMessage } from '../form-error-message/form-error-message';
 import { Textarea } from '../textarea/textarea';
 import { RequiredMarker } from '../required-marker/required-marker';
+import { Spinner } from '../spinner/spinner';
 
 type WishFormProps = {
   wish?: Wish;
@@ -177,7 +178,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
                 onClick={handleDelete}
                 disabled={isDeleting}
               >
-                {/* TODO Spinner */}
+                {isDeleting && <Spinner size="sm" color="blue" />}
                 Löschen
               </Button>
             )}
@@ -186,7 +187,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
               type="submit"
               disabled={isSubmitting || isDeleting || (wish && !dirty)}
             >
-              {/* TODO Spinner */}
+              {isSubmitting && <Spinner size="sm" color="white" />}
               Speichern
             </Button>
           </div>

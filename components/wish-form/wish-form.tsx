@@ -192,11 +192,7 @@ const WishForm = ({ wish, onSubmit, onDelete, onDeleteGiver }: WishFormProps) =>
           </div>
           <div className="flex w-full justify-end gap-2">
             {wish && (
-              <Button
-                variant="outline"
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
+              <Button variant="outline" onClick={handleDelete} disabled={isDeleting}>
                 {isDeleting && <Spinner size="sm" color="blue" className="mr-2" />}
                 Löschen
               </Button>

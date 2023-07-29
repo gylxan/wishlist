@@ -40,8 +40,9 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
     const updatedWish = await updateWish({ id, data: { giver: name } });
 
     if (updatedWish) {
-      setWishes((wishes) =>
-        wishes?.map((wish) => (wish.id === updatedWish?.id ? updatedWish : wish)),
+      setWishes(
+        (wishes) =>
+          wishes?.map((wish) => (wish.id === updatedWish?.id ? updatedWish : wish)),
       );
     }
   };

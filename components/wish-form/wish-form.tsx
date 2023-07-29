@@ -38,7 +38,7 @@ const WishForm = ({ wish, onSubmit, onDelete }: WishFormProps) => {
 
   const handleSubmit = async (values: Wish, { resetForm }: FormikHelpers<any>) => {
     await onSubmit(values);
-    resetForm({ values });
+    resetForm(!wish ? undefined : { values });
   };
 
   const handleDelete = async () => {

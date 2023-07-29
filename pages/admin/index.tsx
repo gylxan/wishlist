@@ -54,17 +54,32 @@ const AdminPage = () => {
     await fetchAndSetWishes();
   };
 
+  const handleDeleteGiver = async (data: Wish) => {
+    if (data.id) {
+      await updateWish({
+        id: data.id,
+        data,
+      });
+      await fetchAndSetWishes();
+    }
+  };
+
   return (
     <div className="relative flex w-full flex-col items-center gap-8 p-4">
       <h1 className="text-xl font-bold">Trage hier deine Wünsche ein</h1>
       <div className="flex w-full flex-col gap-4">
-        <WishForm onSubmit={handleSubmit} onDelete={handleDelete} />
+        <WishForm
+          onSubmit={handleSubmit}
+          onDelete={handleDelete}
+          onDeleteGiver={handleDeleteGiver}
+        />
         {currentWishes?.map((wish) => (
           <WishForm
             key={wish.id}
             onSubmit={handleSubmit}
             wish={wish}
             onDelete={handleDelete}
+            onDeleteGiver={handleDeleteGiver}
           />
         ))}
       </div>

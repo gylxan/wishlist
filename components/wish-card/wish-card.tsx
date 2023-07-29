@@ -68,7 +68,7 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
             disabled={(hasGiver && !isGiverLocalUser) || isLoading}
             onClick={handleClick}
           >
-            {isLoading && <Spinner size="sm" color="white" />}
+            {isLoading && <Spinner size="sm" color="white" className="mr-2" />}
             {hasGiver && isGiverLocalUser ? 'Nicht mehr erfüllen' : 'Erfüllen'}
           </Button>
           {!!url && (

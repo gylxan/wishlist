@@ -45,6 +45,7 @@ export const Button = ({
   return (
     <button
       className={classNames}
+      type="button"
       {...(otherProps as ButtonHTMLAttributes<HTMLButtonElement>)}
     >
       {children}

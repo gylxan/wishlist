@@ -6,9 +6,11 @@ import { useApi } from '../../hooks/useApi';
 import Loader from '../../components/loader/loader';
 import { getSession, signOut } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next';
+import { useNotificationContext } from '../../context/notification';
 
 const AdminPage = () => {
   const [currentWishes, setWishes] = useState<Wish[]>([]);
+  const { showNotification } = useNotificationContext();
   const { fetch: fetchWishes, loading: isFetching } = useApi<Wish[]>({
     url: '/wish',
     method: 'GET',
@@ -39,10 +41,16 @@ const AdminPage = () => {
     method: 'POST',
   });
 
-  const handleDelete = async (id: number) => {
-    await deleteWish({ id });
+  const handleDelete = async (data: Wish) => {
+    if (data.id) {
+      await deleteWish({ id: data.id });
+      showNotification({
+        type: 'success',
+        message: `Wunsch "${data.title}" wurde gelöscht`,
+      });
 
-    await fetchAndSetWishes();
+      await fetchAndSetWishes();
+    }
   };
 
   const handleSubmit = async (data: Wish) => {
@@ -51,6 +59,10 @@ const AdminPage = () => {
     } else {
       await createWish({ data });
     }
+    showNotification({
+      type: 'success',
+      message: `Wunsch "${data.title}" wurde gespeichert`,
+    });
     await fetchAndSetWishes();
   };
 
@@ -59,6 +71,10 @@ const AdminPage = () => {
       await updateWish({
         id: data.id,
         data,
+      });
+      showNotification({
+        type: 'success',
+        message: `${data.giver} wurde als Schenkender entfernt`,
       });
       await fetchAndSetWishes();
     }

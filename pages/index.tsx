@@ -15,12 +15,14 @@ import { isEmpty } from '../utils/string';
 import { useUserContext } from '../context/user';
 import { useApi } from '../hooks/useApi';
 import { Link } from '../components/link/link';
+import { useNotificationContext } from '../context/notification';
 
 type WishlistPageProps = {
   wishes?: Wish[];
 };
 const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const [wishes, setWishes] = useState(wishesProp);
+  const { showNotification } = useNotificationContext();
   const fulfilledWishes = getFulfilledWishes(wishes ?? []);
   const { storageValue: sessionShowFulfilled } = useSessionStorage({
     key: 'show_fulfilled',
@@ -68,6 +70,10 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
       if (!isEmpty(name)) {
         !username && setUser(name as string);
         await handleUpdate(wish.id, name);
+        showNotification({
+          type: 'success',
+          message: 'Wunsch wurde erfüllt',
+        });
       }
     }
   };
@@ -75,6 +81,10 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const handleReject = async (wish: Wish) => {
     if (wish.id) {
       await handleUpdate(wish.id, null);
+      showNotification({
+        type: 'success',
+        message: 'Wunsch wird nicht mehr erfüllt',
+      });
     }
   };
 

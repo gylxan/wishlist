@@ -16,7 +16,7 @@ type WishFormProps = {
   wish?: Wish;
   disabled?: boolean;
   onSubmit: (data: Wish) => Promise<void>;
-  onDelete: (id: number) => Promise<void>;
+  onDelete: (data: Wish) => Promise<void>;
   onDeleteGiver: (data: Wish) => Promise<void>;
 };
 
@@ -47,7 +47,7 @@ const WishForm = ({ wish, onSubmit, onDelete, onDeleteGiver }: WishFormProps) =>
   const handleDelete = async () => {
     if (wish && wish.id) {
       setDeleting(true);
-      await onDelete(wish.id);
+      await onDelete(wish);
       setDeleting(false);
     }
   };

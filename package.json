@@ -14,7 +14,7 @@
     "prettier": "prettier --write '**/*.{ts,tsx,js,jsx,css,html,json}'",
     "lint:fix": "eslint --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier --log-level warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
-    "type-check": "tsc"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@prisma/client": "^4.16.2",

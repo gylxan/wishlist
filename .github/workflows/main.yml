@@ -1,0 +1,37 @@
+name: CI
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install modules
+      run: npm install
+    - name: Run linting
+      run: npm run lint
+    - name: Run typecheck
+      run: npm run typecheck
+#    - name: Run tests
+#      run: npm test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install modules
+        run: npm install
+      - name: Run build
+        run: npx next build
+        env:
+          NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
+          NEXT_PUBLIC_TITLE: ${{ secrets.NEXT_PUBLIC_TITLE }}
+          NEXT_PUBLIC_SITE_TITLE: ${{ secrets.NEXT_PUBLIC_SITE_TITLE }}
+          NEXT_PUBLIC_REASON: ${{ secrets.NEXT_PUBLIC_REASON }}
+          NEXT_PUBLIC_NAME: ${{ secrets.NEXT_PUBLIC_NAME }}
+          NEXT_PUBLIC_DESCRIPTION: ${{ secrets.NEXT_PUBLIC_DESCRIPTION }}
+          NEXT_PUBLIC_DATE: ${{ secrets.NEXT_PUBLIC_DATE }}
+          NEXT_ADMIN_PASSWORD: ${{ secrets.NEXT_ADMIN_PASSWORD }}
+          NEXT_ADMIN_MAIL: ${{ secrets.NEXT_ADMIN_MAIL }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          DATABASE_URL_NON_POOLING: ${{ secrets.DATABASE_URL_NON_POOLING }}
+          DATABASE_PRISMA_URL: ${{ secrets.DATABASE_PRISMA_URL }}

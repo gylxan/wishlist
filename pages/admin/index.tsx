@@ -70,7 +70,7 @@ const AdminPage = () => {
     if (data.id) {
       await updateWish({
         id: data.id,
-        data,
+        data: { ...data, giver: null },
       });
       showNotification({
         type: 'success',

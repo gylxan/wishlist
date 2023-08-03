@@ -55,7 +55,7 @@ const WishForm = ({ wish, onSubmit, onDelete, onDeleteGiver }: WishFormProps) =>
   const handleDeleteGiver = async () => {
     if (wish && wish.id && wish.giver) {
       setDeletingGiver(true);
-      await onDeleteGiver({ ...wish, giver: null });
+      await onDeleteGiver(wish);
       setDeletingGiver(false);
     }
   };

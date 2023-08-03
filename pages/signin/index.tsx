@@ -17,6 +17,11 @@ const SignInSchema = object().shape({
     .required('Gib einen gültige E-Mail ein'),
   password: string().required('Gib ein gültiges Passwort ein'),
 });
+
+type SignIn = {
+  email: string;
+  password: string;
+};
 const SignInPage = () => {
   const [error, setError] = useState('');
   const router = useRouter();
@@ -24,7 +29,7 @@ const SignInPage = () => {
 
   const handleSubmit = async (
     values: { password: string; email: string },
-    { resetForm }: FormikHelpers<any>,
+    { resetForm }: FormikHelpers<SignIn>,
   ) => {
     const result = await signIn('credentials', {
       ...values,

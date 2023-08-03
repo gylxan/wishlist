@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../utils/prisma';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export const getWishes = async () => await prisma.wish.findMany();
 

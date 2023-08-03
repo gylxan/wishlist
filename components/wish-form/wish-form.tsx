@@ -39,7 +39,7 @@ const WishForm = ({ wish, onSubmit, onDelete, onDeleteGiver }: WishFormProps) =>
   const [isDeleting, setDeleting] = useState(false);
   const [isDeletingGiver, setDeletingGiver] = useState(false);
 
-  const handleSubmit = async (values: Wish, { resetForm }: FormikHelpers<any>) => {
+  const handleSubmit = async (values: Wish, { resetForm }: FormikHelpers<Wish>) => {
     await onSubmit(values);
     resetForm(!wish ? undefined : { values });
   };

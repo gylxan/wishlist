@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   getLocalStorageItem,
   LocalStorageKey,
+  removeLocalStorageItem,
   setLocalStorageItem,
 } from '../utils/local-storage';
 
@@ -21,7 +22,12 @@ const useLocalStorage = ({ key, fallback = null }: UseLocalStorageOptions) => {
     setValue(value);
   };
 
-  return { storageValue, setStorageValue };
+  const removeStorageValue = () => {
+    removeLocalStorageItem(key);
+    setValue(fallback);
+  };
+
+  return { storageValue, setStorageValue, removeStorageValue };
 };
 
 export default useLocalStorage;

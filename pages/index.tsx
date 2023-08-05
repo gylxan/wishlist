@@ -175,6 +175,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
                     name="name"
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    autoComplete="given-name"
                     required
                   />
                   {errors.name && touched.name && (

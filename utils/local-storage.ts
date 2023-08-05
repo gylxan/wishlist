@@ -11,3 +11,9 @@ export const getLocalStorageItem = (key: LocalStorageKey) => {
   }
   return null;
 };
+
+export const removeLocalStorageItem = (key: LocalStorageKey) => {
+  if (typeof window !== 'undefined') {
+    window.sessionStorage.removeItem(key);
+  }
+};

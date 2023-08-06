@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   getLocalStorageItem,
   LocalStorageKey,
@@ -11,11 +11,10 @@ type UseLocalStorageOptions = {
   fallback?: string | null;
 };
 const useLocalStorage = ({ key, fallback = null }: UseLocalStorageOptions) => {
-  const [storageValue, setValue] = useState(fallback);
-
-  useEffect(() => {
-    setValue(getLocalStorageItem(key));
-  }, [key]);
+  const [storageValue, setValue] = useState(() => {
+    const localStorageValue = getLocalStorageItem(key);
+    return localStorageValue || fallback;
+  });
 
   const setStorageValue = (value: string) => {
     setLocalStorageItem(key, value);

@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
+import { ComponentPropsWithoutRef } from 'react';
 import { Check, X } from 'react-feather';
 import clsx from 'clsx';
 import { useDelayedUnmount } from '../../hooks/useDelayedUnmount';

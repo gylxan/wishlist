@@ -6,19 +6,39 @@ import clsx from 'clsx';
 import { isUserLocalUser } from '../../utils/user';
 import { useUserContext } from '../../context/user';
 import { Spinner } from '../spinner/spinner';
+import { useDelayedUnmount } from '../../hooks/useDelayedUnmount';
+import { getShortenedWishUrl } from '../../utils/wish';
 
 type WishCardProps = {
   wish: Wish;
   onFulfill: (wish: Wish) => Promise<void>;
   onReject: (wish: Wish) => Promise<void>;
+  onUnmount: (wish: Wish) => void;
   loading: boolean;
+  show: boolean;
 };
 
-export const WishCard = ({ wish, onFulfill, onReject, loading }: WishCardProps) => {
+export const WishCard = ({
+  wish,
+  onFulfill,
+  onReject,
+  loading,
+  show,
+  onUnmount,
+}: WishCardProps) => {
   const { url, title, description, imageUrl, giver } = wish;
-  const newUrl = url ? new URL(url) : undefined;
-  const urlWithoutWww = newUrl?.hostname.replace('www.', '');
+
   const { username } = useUserContext();
+  const handleUnmount = () => {
+    onUnmount(wish);
+  };
+
+  useDelayedUnmount({
+    isMounted: show,
+    onUnmount: handleUnmount,
+  });
+
+  const urlWithoutWww = getShortenedWishUrl(wish);
 
   const hasGiver = !!giver;
   const isGiverLocalUser = isUserLocalUser(giver ?? null, username);
@@ -30,7 +50,12 @@ export const WishCard = ({ wish, onFulfill, onReject, loading }: WishCardProps) 
   const getGiverClass = (className?: string) => clsx(className, giver && 'opacity-60');
 
   return (
-    <Card className={clsx(giver && 'bg-gray-200 dark:bg-gray-600')}>
+    <Card
+      className={clsx(
+        giver && 'bg-gray-200 dark:bg-gray-600',
+        !show && 'animate-bounce-out',
+      )}
+    >
       <div className="flex w-full flex-col items-center gap-3 text-center">
         <h2 className={getGiverClass('text-xl font-bold text-black dark:text-white')}>
           {title}

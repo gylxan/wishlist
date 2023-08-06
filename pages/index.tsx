@@ -42,7 +42,7 @@ type WishlistPageProps = {
 };
 const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const [showModal, setShowModal] = useState(false);
-  const [currentWish, setCurrentWish] = useState<Wish | null>(null);
+  const [currentSubmittingWish, setCurrentSubmittingWish] = useState<Wish | null>(null);
   const modalUsernameInputRef = useRef<HTMLInputElement | null>(null);
   const [wishes, setWishes] = useState(wishesProp);
   const [loadingWishIds, setLoadingWishIds] = useState<number[]>([]);
@@ -89,7 +89,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const handleFulfill = async (wish: Wish) => {
     if (!wish.giver && wish.id) {
       if (isEmpty(username)) {
-        setCurrentWish(wish);
+        setCurrentSubmittingWish(wish);
         handleShowModal();
         return;
       }
@@ -106,7 +106,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
         type: 'success',
         message: 'Wunsch wird von dir erfüllt',
       });
-      setCurrentWish(null);
+      setCurrentSubmittingWish(null);
       return;
     }
     showNotification({
@@ -138,8 +138,8 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   ) => {
     setShowModal(false);
     setUser(values.name);
-    if (currentWish) {
-      fulfillWish(currentWish, values.name);
+    if (currentSubmittingWish) {
+      fulfillWish(currentSubmittingWish, values.name);
     }
     resetForm();
   };

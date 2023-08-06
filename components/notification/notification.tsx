@@ -1,6 +1,7 @@
 import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
 import { Check, X } from 'react-feather';
 import clsx from 'clsx';
+import { useDelayedUnmount } from '../../hooks/useDelayedUnmount';
 
 type NotificationProps = Omit<ComponentPropsWithoutRef<'div'>, 'id'> & {
   type: 'error' | 'success';
@@ -26,14 +27,7 @@ export const Notification = ({
   onDismiss,
   ...props
 }: NotificationProps) => {
-  const [open, setOpen] = useState(true);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      clearTimeout(timeout);
-      setOpen(false);
-    }, duration);
-  }, [id, duration]);
+  const { open, setOpen } = useDelayedUnmount({ isMounted: false, delayTime: duration });
 
   const handleClose = () => {
     setOpen(false);

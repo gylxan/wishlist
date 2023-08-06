@@ -42,26 +42,29 @@ type WishlistPageProps = {
 };
 const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const [showModal, setShowModal] = useState(false);
-  const [currentWish, setCurrentWish] = useState<Wish | null>(null);
+  const [currentSubmittingWish, setCurrentSubmittingWish] = useState<Wish | null>(null);
   const modalUsernameInputRef = useRef<HTMLInputElement | null>(null);
   const [wishes, setWishes] = useState(wishesProp);
+  const [loadingWishIds, setLoadingWishIds] = useState<number[]>([]);
   const { showNotification } = useNotificationContext();
-  const fulfilledWishes = getFulfilledWishes(wishes ?? []);
   const { storageValue: sessionShowFulfilled } = useSessionStorage({
     key: 'show_fulfilled',
   });
+
   const { username, setUser, removeUser } = useUserContext();
   const [showFulfilled, setShowFulfilled] = useState(sessionShowFulfilled === 'true');
   const { fetch: updateWish } = useApi<Wish>({
     url: '/wish',
     method: 'PUT',
   });
+  const fulfilledWishes = getFulfilledWishes(wishes ?? []);
 
   useEffect(() => {
     setShowFulfilled(sessionShowFulfilled === 'true');
   }, [sessionShowFulfilled]);
 
   const handleUpdate = async (id: number, name: string | null) => {
+    setLoadingWishIds((wishIds) => [...wishIds, id]);
     const updatedWish = await updateWish({ id, data: { giver: name } });
 
     if (updatedWish) {
@@ -69,6 +72,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
         (wishes) =>
           wishes?.map((wish) => (wish.id === updatedWish?.id ? updatedWish : wish)),
       );
+      setLoadingWishIds((wishIds) => wishIds.filter((id) => id !== id));
     }
   };
 
@@ -85,12 +89,12 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const handleFulfill = async (wish: Wish) => {
     if (!wish.giver && wish.id) {
       if (isEmpty(username)) {
-        setCurrentWish(wish);
+        setCurrentSubmittingWish(wish);
         handleShowModal();
         return;
       }
 
-      fulfillWish(wish);
+      await fulfillWish(wish);
     }
   };
 
@@ -100,9 +104,9 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
       await handleUpdate(wish.id, currUser);
       showNotification({
         type: 'success',
-        message: 'Wunsch wird erfüllt',
+        message: 'Wunsch wird von dir erfüllt',
       });
-      setCurrentWish(null);
+      setCurrentSubmittingWish(null);
       return;
     }
     showNotification({
@@ -134,8 +138,8 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   ) => {
     setShowModal(false);
     setUser(values.name);
-    if (currentWish) {
-      fulfillWish(currentWish, values.name);
+    if (currentSubmittingWish) {
+      fulfillWish(currentSubmittingWish, values.name);
     }
     resetForm();
   };
@@ -237,6 +241,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
                 wish={wish}
                 onFulfill={handleFulfill}
                 onReject={handleReject}
+                loading={loadingWishIds.includes(wish.id as number)}
               />
             ))}
         </Wishlist>

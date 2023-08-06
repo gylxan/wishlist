@@ -77,6 +77,12 @@ module.exports = {
       transitionTimingFunction: {
         'bounce-in': 'cubic-bezier(0.215, 0.61, 0.355, 1)',
       },
+      backgroundImage: {
+        'light-background': `url(${
+          process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_LIGHT ?? ''
+        })`,
+        'dark-background': `url(${process.env.NEXT_PUBLIC_BACKGROUND_IMAGE_DARK ?? ''})`,
+      },
     },
   },
   plugins: [],

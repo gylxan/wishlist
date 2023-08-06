@@ -33,7 +33,7 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
   const getGiverClass = (className?: string) => clsx(className, giver && 'opacity-60');
 
   return (
-    <Card className={clsx('justify-between', giver && 'bg-gray-200 dark:bg-gray-600')}>
+    <Card className={clsx(giver && 'bg-gray-200 dark:bg-gray-600')}>
       <div className="flex w-full flex-col items-center gap-3 text-center">
         <h2 className={getGiverClass('text-xl font-bold text-black dark:text-white')}>
           {title}
@@ -48,13 +48,13 @@ export const WishCard = ({ wish, onFulfill, onReject }: WishCardProps) => {
         )}
       </div>
 
-      <div className="flex w-full flex-col items-center gap-3 text-center">
+      <div className="flex w-full flex-col items-center gap-3 text-center justify-start">
         {imageUrl && (
           <img src={imageUrl} alt={`Product ${title}`} className={getGiverClass()} />
         )}
         {description && <p className="italic">&quot;{description}&quot;</p>}
       </div>
-      <div className="flex w-full flex-col items-center gap-3 text-center">
+      <div className="flex w-full flex-col items-center gap-3 text-center mt-auto">
         <p className={getGiverClass('min-h-[1.5em]')}>
           {giver ? `Erfüllt von ${giver}` : ' '}
         </p>

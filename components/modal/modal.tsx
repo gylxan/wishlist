@@ -1,26 +1,15 @@
 import { createPortal } from 'react-dom';
-import { ComponentPropsWithoutRef, ReactNode, useEffect, useState } from 'react';
+import { ComponentPropsWithoutRef, ReactNode } from 'react';
 import clsx from 'clsx';
 import { X } from 'react-feather';
+import { useDelayedUnmount } from '../../hooks/useDelayedUnmount';
 
 type ModalProps = {
   children: ReactNode;
   open: boolean;
 };
 export const Modal = ({ children, open: openProp }: ModalProps) => {
-  const [open, setOpen] = useState(openProp);
-
-  // todo create new hook
-  useEffect(() => {
-    if (!openProp && open) {
-      const timeout = setTimeout(() => {
-        setOpen(false);
-        clearTimeout(timeout);
-      }, 500);
-    } else if (openProp && !open) {
-      setOpen(true);
-    }
-  }, [openProp, open]);
+  const { open } = useDelayedUnmount({ initialMount: false, isMounted: openProp });
 
   const modal = open ? (
     <div

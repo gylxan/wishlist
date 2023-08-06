@@ -47,7 +47,7 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center">
+    <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
       <Card className="flex w-full flex-col items-center p-8 shadow-md sm:max-w-2xl">
         <Formik
           initialValues={{

@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import Link, { LinkProps } from 'next/link';
 
 const variantClasses = {
-  primary: `text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800`,
-  outline: `text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800`,
+  primary: `text-white bg-blue-700 hover:enabled:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg dark:bg-blue-600 dark:hover:enabled:bg-blue-700 focus:outline-none dark:focus:ring-blue-800`,
+  outline: `text-blue-700 hover:enabled:text-white border border-blue-700 hover:enabled:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center dark:border-blue-500 dark:text-blue-500 dark:hover:enabled:text-white dark:hover:enabled:bg-blue-500 dark:focus:ring-blue-800`,
 } as const;
 
 const sizeClasses = {

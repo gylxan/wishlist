@@ -44,11 +44,13 @@ export const GreetingCard = ({
         <span>
           {fulfilledWishes.length} / {wishes?.length} Wünschen erfüllt
         </span>
-        {fulfilledWishes.length > 0 && (
-          <Button variant="outline" onClick={onShowFulfilledWishes}>
-            {showFulfilledWishes ? 'Erfüllte ausblenden' : 'Erfüllte anzeigen'}
-          </Button>
-        )}
+        <Button
+          variant="outline"
+          onClick={onShowFulfilledWishes}
+          disabled={!fulfilledWishes.length}
+        >
+          {showFulfilledWishes ? 'Erfüllte ausblenden' : 'Erfüllte anzeigen'}
+        </Button>
       </div>
     </Card>
   );

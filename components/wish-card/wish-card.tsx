@@ -53,7 +53,7 @@ export const WishCard = ({
     <Card
       className={clsx(
         giver && 'bg-gray-200 dark:bg-gray-600',
-        !show && 'animate-bounce-out',
+        !show && 'animate-fade-out',
       )}
     >
       <div className="flex w-full flex-col items-center gap-3 text-center">

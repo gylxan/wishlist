@@ -6,6 +6,7 @@ module.exports = {
       animation: {
         'fade-in-left': 'fade-in-left 300ms forwards',
         'fade-out-right': 'fade-out-right 300ms forwards',
+        'fade-out': 'fade-out 500ms forwards',
         'bounce-in': 'bounce-in 500ms forwards',
         'bounce-out': 'bounce-out 500ms forwards',
       },
@@ -28,6 +29,14 @@ module.exports = {
           '100%': {
             opacity: 0,
             transform: 'translateX(110%)',
+          },
+        },
+        'fade-out': {
+          '0%': {
+            opacity: 1,
+          },
+          '100%': {
+            opacity: 0,
           },
         },
         'bounce-in': {

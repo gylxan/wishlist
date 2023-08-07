@@ -152,6 +152,7 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setCurrentSubmittingWish(null);
   };
 
   return (

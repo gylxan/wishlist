@@ -40,7 +40,7 @@ body {
     Droid Sans,
     Helvetica Neue,
     sans-serif;
-  @apply bg-bottom bg-cover bg-no-repeat bg-light-background dark:bg-dark-background;
+  @apply bg-top bg-cover bg-no-repeat bg-light-background dark:bg-dark-background;
 }
 
 a {

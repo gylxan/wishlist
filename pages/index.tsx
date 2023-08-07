@@ -1,11 +1,7 @@
 import { WishCard } from '../components/wish-card/wish-card';
 import { Wishlist } from '../components/wishlist/wishlist';
-import { Calendar, Star, User } from 'react-feather';
-import { Card } from '../components/card/card';
-import { getFulfilledWishes } from '../utils/wish';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button/button';
-import { getDifferenceInDays, getFormattedDate, getParsedDate } from '../types/date';
 import { GetServerSideProps } from 'next';
 import { Wish } from '../types/wish';
 import prisma from '../utils/prisma';
@@ -28,6 +24,7 @@ import { Input } from '../components/input/input';
 import { object, string } from 'yup';
 import { Formik, FormikHelpers } from 'formik';
 import { FormErrorMessage } from '../components/form-error-message/form-error-message';
+import { GreetingCard } from '../components/greeting-card/greeting-card';
 
 const GiverSchema = object().shape({
   name: string().required('Gib einen gültigen Namen ein'),
@@ -40,11 +37,13 @@ type GiverObject = {
 type WishlistPageProps = {
   wishes?: Wish[];
 };
+
 const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
   const [showModal, setShowModal] = useState(false);
   const [currentSubmittingWish, setCurrentSubmittingWish] = useState<Wish | null>(null);
   const modalUsernameInputRef = useRef<HTMLInputElement | null>(null);
-  const [wishes, setWishes] = useState(wishesProp);
+  const [wishes, setWishes] = useState<Wish[]>(wishesProp ?? []);
+  const [idsToUnmount, setIdsToUnmount] = useState<number[]>([]);
   const [loadingWishIds, setLoadingWishIds] = useState<number[]>([]);
   const { showNotification } = useNotificationContext();
   const { storageValue: sessionShowFulfilled } = useSessionStorage({
@@ -57,11 +56,15 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
     url: '/wish',
     method: 'PUT',
   });
-  const fulfilledWishes = getFulfilledWishes(wishes ?? []);
 
   useEffect(() => {
     setShowFulfilled(sessionShowFulfilled === 'true');
   }, [sessionShowFulfilled]);
+
+  const handleShowFulfilledWishes = () => {
+    setShowFulfilled((showFulfilled) => !showFulfilled);
+    setSessionStorageItem('show_fulfilled', `${!showFulfilled}`);
+  };
 
   const handleUpdate = async (id: number, name: string | null) => {
     setLoadingWishIds((wishIds) => [...wishIds, id]);
@@ -106,6 +109,9 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
         type: 'success',
         message: 'Wunsch wird von dir erfüllt',
       });
+      if (!showFulfilled) {
+        setIdsToUnmount((ids) => [...ids, wish.id as number]);
+      }
       setCurrentSubmittingWish(null);
       return;
     }
@@ -146,12 +152,8 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setCurrentSubmittingWish(null);
   };
-
-  const dateUntil = process.env.NEXT_PUBLIC_DATE
-    ? getParsedDate(process.env.NEXT_PUBLIC_DATE)
-    : null;
-  const differenceInDays = dateUntil ? getDifferenceInDays(new Date(), dateUntil) : 0;
 
   return (
     <>
@@ -198,50 +200,28 @@ const WishlistPage = ({ wishes: wishesProp }: WishlistPageProps) => {
         </Formik>
       </Modal>
       <div className="relative flex min-h-screen flex-col gap-4 p-4">
-        <Card>
-          <span className="text-3xl font-bold">Endlich es es so weit! 🎉</span>
-          <div className="flex flex-row flex-wrap justify-center gap-4">
-            <span className="flex flex-row items-center gap-2">
-              <User /> {process.env.NEXT_PUBLIC_NAME}
-            </span>
-            <span className="flex flex-row items-center gap-2">
-              <Star /> {process.env.NEXT_PUBLIC_REASON}
-            </span>
-            {dateUntil && (
-              <span className="flex flex-row items-center gap-2">
-                <Calendar /> {getFormattedDate(dateUntil)} (in {differenceInDays}{' '}
-                {differenceInDays === 1 ? 'Tag' : 'Tagen'})
-              </span>
-            )}
-          </div>
-          <p className="my-6 text-center">{process.env.NEXT_PUBLIC_DESCRIPTION}</p>
-          <div className="flex w-full items-center justify-between text-gray-500 dark:text-gray-300">
-            <span>
-              {fulfilledWishes.length} / {wishes?.length} Wünschen erfüllt
-            </span>
-            {fulfilledWishes.length > 0 && (
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowFulfilled(!showFulfilled);
-                  setSessionStorageItem('show_fulfilled', `${!showFulfilled}`);
-                }}
-              >
-                {showFulfilled ? 'Erfüllte ausblenden' : 'Erfüllte anzeigen'}
-              </Button>
-            )}
-          </div>
-        </Card>
+        <GreetingCard
+          wishes={wishes}
+          showFulfilledWishes={showFulfilled}
+          onShowFulfilledWishes={handleShowFulfilledWishes}
+        />
         <Wishlist>
           {wishes
-            ?.filter(({ giver }) => (showFulfilled ? true : !giver))
+            ?.filter(({ id, giver }) =>
+              // Show only wishes without giver or when they should still be unmounted with animation
+              showFulfilled ? true : !giver || (id && idsToUnmount.includes(id)),
+            )
             .map((wish) => (
               <WishCard
                 key={wish.id}
+                show={!idsToUnmount.includes(wish.id as number) || showFulfilled}
                 wish={wish}
                 onFulfill={handleFulfill}
                 onReject={handleReject}
                 loading={loadingWishIds.includes(wish.id as number)}
+                onUnmount={(wish) => {
+                  setIdsToUnmount((ids) => ids.filter((id) => id !== wish.id));
+                }}
               />
             ))}
         </Wishlist>

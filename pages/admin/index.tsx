@@ -114,7 +114,7 @@ export default AdminPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
-  console.warn(session);
+
   if (!session) {
     return {
       redirect: {

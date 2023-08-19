@@ -20,6 +20,8 @@ export default function App({
           <meta property="og:description" content={process.env.NEXT_PUBLIC_DESCRIPTION} />
           <meta property="og:type" content="website" />
           <meta property="og:site_name" content={process.env.NEXT_PUBLIC_SITE_TITLE} />
+          <meta name="theme-color" content="#90cdf4" />
+          <link rel="manifest" href="/manifest.json" />
         </Head>
         <UserWrapper>
           <main className="mx-auto flex min-h-screen w-full max-w-screen-xl flex-col justify-start relative">
